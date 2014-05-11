@@ -68,24 +68,17 @@ private:
         bool operator()(std::pair<Grid, Dir> const& a, std::pair<Grid, Dir> const& b){
             return staticEval(a.first) < staticEval(b.first);
         }
+        bool operator()(Grid const& a, Grid const& b){
+            return staticEval(a) < staticEval(b);
+        }
     };
-    using GridList = std::set<Grid>;
     template<class T>
-    using GridList_t = std::set<T, Comp>;
+    using GridList_t = std::vector<T>;
+    using GridList = GridList_t<Grid>;
     GridList_t<std::pair<Grid, Dir>> nextPossibleWorld(Grid const&) const;
-    GridList_t<std::pair<Grid, Dir>> nextPossibleWorldUp(Grid const&, Dir) const;
-
+    GridList nextPossibleWorldUp(Grid const&) const;
+    static bool nurseryTime(Grid const&);
 };
-
-
-
-
-
-
-
-
-
-
 
 
 
