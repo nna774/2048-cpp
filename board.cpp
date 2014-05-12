@@ -361,9 +361,9 @@ bool Board::alive(Board::Grid const& grid) const{
     for(int i(0); i < 4;++i) if(movable(grid, allDirs[i])) return true;
     return false;
 }
-double Board::staticEval(Board::Grid const& grid){
+int Board::staticEval(Board::Grid const& grid){
     int const constexpr SPACE_WEIGHT = 500;
-    double sum(0);
+    int sum(0);
     for(int i(0); i < 4; ++i)
         for(int j(0); j < 4; ++j)
             sum += grid[i][j]

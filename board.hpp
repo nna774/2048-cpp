@@ -62,7 +62,7 @@ private:
     bool movable(Grid const&, Dir) const;
     std::pair<bool,Grid> movedAndBirth(Grid const& , Dir);
     bool alive(Grid const&) const;
-    static double staticEval(Grid const&);
+    static int staticEval(Grid const&);
     static int log2(int);
     struct Comp{
         bool operator()(std::pair<Grid, Dir> const& a, std::pair<Grid, Dir> const& b){
