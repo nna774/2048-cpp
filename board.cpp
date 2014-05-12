@@ -88,6 +88,7 @@ bool Board::move(Dir dir){
     read(fd, buf, 512);
 
     std::string tmp;
+    std::cout << buf << '\n';
     std::istringstream is03(buf);
     std::getline (is03, tmp);
     std::getline (is03, tmp);
@@ -112,7 +113,7 @@ bool Board::move(Dir dir){
     //         std::cout << f;
     //     std::cout << std::endl;
     // }
-    
+
     if(v.get("over").evaluate_as_boolean()){
         throw v; // 寿命超えるっけ？
     }
@@ -121,12 +122,13 @@ bool Board::move(Dir dir){
 }
 
 void Board::show() const {
-    std::cout << "+----+----+----+----+" << std::endl;
+    std::cout << "+----+----+----+----+\n";
     for(auto e: grid){
         std::cout << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[0])
                   << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[1])
                   << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[2])
-                  << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[3]) << '|' << std::endl;;
+                  << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[3])
+                  << '|' << '\n';
     }
     std::cout << "+----+----+----+----+" << std::endl;
 }
@@ -169,7 +171,7 @@ Dir Board::dicideDir() {
     int const constexpr MIN_LENGTH = 100;
     auto npw = nextPossibleWorld(grid);
     auto top = npw;
-    decltype(npw) npw2, npw3, npw4, npw5;
+    decltype(npw) npw2, npw3, npw4, npw5, npw6;
     npw2.reserve(16);
     for(auto const& e: npw){
         for(auto const& e2: nextPossibleWorld(e.first))
@@ -199,23 +201,41 @@ Dir Board::dicideDir() {
     }
     top = npw4;
     if(! nurseryTime(grid)) {
-        npw5.reserve(1024);
+        std::cout << "before uniq: " << npw4.size() << std::endl;
+        std::sort(std::begin(npw4), std::end(npw4));
+        auto newEnd = std::unique(std::begin(npw4), std::end(npw4), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
+        npw4.erase(newEnd, std::end(npw4));
+        std::cout << "after uniq: " << npw4.size() << std::endl;
+        npw5.reserve(1024 * 12);
         for(auto const& e: npw4){
             for(auto const& e2: nextPossibleWorld(e.first))
                 npw5.push_back(make_pair(e2.first, e.second));
         }
         if(npw5.empty()) goto empty;
         top = npw5;
-    }
-    if(top.size() <= MIN_LENGTH){
-        decltype(npw) top2;
-        for(auto const& e: top){
+        // もう一回
+        std::cout << "before uniq: " << npw5.size() << std::endl;
+        std::sort(std::begin(npw5), std::end(npw5));
+        newEnd = std::unique(std::begin(npw5), std::end(npw5), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
+        npw5.erase(newEnd, std::end(npw5));
+        std::cout << "after uniq: " << npw5.size() << std::endl;
+        npw6.reserve(1024 * 24);
+        for(auto const& e: npw5){
             for(auto const& e2: nextPossibleWorld(e.first))
-                top2.push_back(make_pair(e2.first, e.second));
+                npw6.push_back(make_pair(e2.first, e.second));
         }
-        if(top2.empty()) goto empty;
-        top = top2;
+        if(npw6.empty()) goto empty;
+        top = npw6;
     }
+    // if(top.size() <= MIN_LENGTH){
+    //     decltype(npw) top2;
+    //     for(auto const& e: top){
+    //         for(auto const& e2: nextPossibleWorld(e.first))
+    //             top2.push_back(make_pair(e2.first, e.second));
+    //     }
+    //     if(top2.empty()) goto empty;
+    //     top = top2;
+    // }
     empty: ;
     // for(auto const& e:npw3) std::cout << staticEval(e.first) << ", " << dirToInt(e.second) << std::endl;
     auto max = *std::max_element(std::begin(top), std::end(top), Comp());
@@ -270,7 +290,8 @@ Board::Grid Board::rotate(Board::Grid const& grid, Dir dir) const{
         return {{{{grid[3][3], grid[3][2], grid[3][1], grid[3][0]}},
                 {{ grid[2][3], grid[2][2], grid[2][1], grid[2][0]}},
                 {{ grid[1][3], grid[1][2], grid[1][1], grid[1][0]}},
-                {{ grid[0][3], grid[0][2], grid[0][1], grid[0][0]}} }};    if(dir == Dir::Left)
+                {{ grid[0][3], grid[0][2], grid[0][1], grid[0][0]}} }};
+    if(dir == Dir::Left)
         return {{{{grid[3][0], grid[2][0], grid[1][0], grid[0][0]}},
                 {{ grid[3][1], grid[2][1], grid[1][1], grid[0][1]}},
                 {{ grid[3][2], grid[2][2], grid[1][2], grid[0][2]}},
@@ -333,11 +354,12 @@ Board::Grid Board::moved(Board::Grid const& grid, Dir dir) const{
 }
 
 bool Board::movable(Board::Grid const& grid, Dir dir) const{
-    auto m = moved(grid, dir);
-    for(int i(0); i < 4; ++i)
-        for(int j(0); j < 4; ++j)
-            if(m[i][j] != grid[i][j]) return true;
-    return false; // moved(grid, dir) != grid;
+    // auto m = moved(grid, dir);
+    // for(int i(0); i < 4; ++i)
+    //     for(int j(0); j < 4; ++j)
+    //         if(m[i][j] != grid[i][j]) return true;
+    // return false; 
+    return moved(grid, dir) != grid;
 }
 
 std::pair<bool,Board::Grid> Board::movedAndBirth(Board::Grid const& grid, Dir dir) { // 動けばfirst はtrue
@@ -411,21 +433,19 @@ int Board::log2(int i){
 
 Board::GridList_t<std::pair<Board::Grid, Dir>> Board::nextPossibleWorld(Board::Grid const& grid) const{
     GridList_t<std::pair<Grid, Dir>> vec;
-    vec.reserve(16);
+    vec.reserve(32);
     for(auto dir: allDirs){
-        GridList tmp;
-        tmp = nextPossibleWorldUp(rotate(grid, dir));
+        GridList tmp = nextPossibleWorldUp(rotate(grid, dir));
         for(auto const& e: tmp) vec.push_back(std::make_pair(rotate(e, mirror(dir)), dir));
     }
+//    std::cout << "size: " << vec.size() << std::endl;
     return vec;
 }
 
 Board::GridList Board::nextPossibleWorldUp(Board::Grid const& grid) const{
     auto up = moveUp(grid);
-    if(up == grid){
-        GridList emp;
-        return emp;
-    }
+    if(up == grid) return {};
+
     GridList tmps(8, up);
     int cnt(0);
     for(int i(0); i < 4; ++i)
@@ -437,13 +457,4 @@ Board::GridList Board::nextPossibleWorldUp(Board::Grid const& grid) const{
             }
     return tmps;
 }
-
-
-
-
-
-
-
-
-
 
