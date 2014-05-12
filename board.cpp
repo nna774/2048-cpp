@@ -196,7 +196,7 @@ Dir Board::dicideDir() {
     if(npw4.empty()) {
         top = std::move(npw);
         goto empty;
-    } goto empty;
+    }
     top = npw4;
     if(! nurseryTime(grid)) {
         npw5.reserve(1024);
