@@ -445,15 +445,17 @@ Board::GridList_t<std::pair<Board::Grid, Dir>> Board::nextPossibleWorld(Board::G
 Board::GridList Board::nextPossibleWorldUp(Board::Grid const& grid) const{
     auto up = moveUp(grid);
     if(up == grid) return {};
-
-    GridList tmps(8, up);
+    int zeros(0);
+    for(int i(0); i < 4; ++i)
+        for(int j(0); j < 4; ++j)
+            if(up[i][j] == 0) ++zeros;
+    GridList tmps(zeros, up);
     int cnt(0);
     for(int i(0); i < 4; ++i)
         for(int j(0); j < 4; ++j)
             if(up[j][i] == 0){
                 tmps[cnt][j][i] = 2;
                 tmps[cnt+1][j][i] = 4;
-                break;
             }
     return tmps;
 }
