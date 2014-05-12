@@ -88,7 +88,7 @@ bool Board::move(Dir dir){
     read(fd, buf, 512);
 
     std::string tmp;
-    std::cout << buf << '\n';
+    // std::cout << buf << '\n';
     std::istringstream is03(buf);
     std::getline (is03, tmp);
     std::getline (is03, tmp);
@@ -172,8 +172,8 @@ Dir Board::dicideDir() {
     auto npw = nextPossibleWorld(grid);
     auto top = npw;
     decltype(npw) npw2, npw3, npw4, npw5, npw6;
-    std::cout << "size of 1: " << npw.size() << std::endl;
-    npw2.reserve(1024);
+    // std::cout << "size of 1: " << npw.size() << std::endl;
+    npw2.reserve(1024 * 8);
     for(auto const& e: npw){
         for(auto const& e2: nextPossibleWorld(e.first))
             npw2.push_back(make_pair(e2.first, e.second));
@@ -182,7 +182,7 @@ Dir Board::dicideDir() {
         top = std::move(npw);
         goto empty;
     }
-    std::cout << "size of 2: " << npw2.size() << std::endl;
+    // std::cout << "size of 2: " << npw2.size() << std::endl;
     npw3.reserve(1024 * 20);
     for(auto const& e: npw2){
         for(auto const& e2: nextPossibleWorld(e.first))
@@ -192,7 +192,13 @@ Dir Board::dicideDir() {
         top = std::move(npw);
         goto empty;
     }
-    std::cout << "size of 3: " << npw3.size() << std::endl;
+    // std::cout << "before uniq of 3: " << npw3.size() << std::endl;
+    std::sort(std::begin(npw3), std::end(npw3));
+    
+    npw3.erase(std::unique(std::begin(npw3), std::end(npw3), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; })
+               , std::end(npw3));
+    // std::cout << "after uniq of 3: " << npw3.size() << std::endl;
+
     npw4.reserve(1024 * 512);
     for(auto const& e: npw3){
         for(auto const& e2: nextPossibleWorld(e.first))
@@ -204,11 +210,11 @@ Dir Board::dicideDir() {
     }
     top = npw4;
     if(! nurseryTime(grid)) {
-        std::cout << "before uniq of 4: " << npw4.size() << std::endl;
+        // std::cout << "before uniq of 4: " << npw4.size() << std::endl;
         std::sort(std::begin(npw4), std::end(npw4));
         auto newEnd = std::unique(std::begin(npw4), std::end(npw4), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
         npw4.erase(newEnd, std::end(npw4));
-        std::cout << "after uniq of 4: " << npw4.size() << std::endl;
+        // std::cout << "after uniq of 4: " << npw4.size() << std::endl;
         npw5.reserve(1024 * 12);
         for(auto const& e: npw4){
             for(auto const& e2: nextPossibleWorld(e.first))
@@ -217,11 +223,11 @@ Dir Board::dicideDir() {
         if(npw5.empty()) goto empty;
         top = npw5;
         // もう一回
-        std::cout << "before uniq of 5: " << npw5.size() << std::endl;
+        // std::cout << "before uniq of 5: " << npw5.size() << std::endl;
         std::sort(std::begin(npw5), std::end(npw5));
         newEnd = std::unique(std::begin(npw5), std::end(npw5), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
         npw5.erase(newEnd, std::end(npw5));
-        std::cout << "after uniq of 5: " << npw5.size() << std::endl;
+        // std::cout << "after uniq of 5: " << npw5.size() << std::endl;
         npw6.reserve(1024 * 120);
         for(auto const& e: npw5){
             for(auto const& e2: nextPossibleWorld(e.first))
@@ -436,7 +442,7 @@ int Board::log2(int i){
 
 Board::GridList_t<std::pair<Board::Grid, Dir>> Board::nextPossibleWorld(Board::Grid const& grid) const{
     GridList_t<std::pair<Grid, Dir>> vec;
-    vec.reserve(32);
+    vec.reserve(128);
     for(auto dir: allDirs){
         GridList tmp = nextPossibleWorldUp(rotate(grid, dir));
         for(auto const& e: tmp) vec.push_back(std::make_pair(rotate(e, mirror(dir)), dir));
@@ -452,7 +458,7 @@ Board::GridList Board::nextPossibleWorldUp(Board::Grid const& grid) const{
     for(int i(0); i < 4; ++i)
         for(int j(0); j < 4; ++j)
             if(up[i][j] == 0) ++zeros;
-    GridList tmps(zeros, up);
+    GridList tmps(zeros * 2, up);
     int cnt(0);
     for(int i(0); i < 4; ++i)
         for(int j(0); j < 4; ++j)
