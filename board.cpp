@@ -172,7 +172,8 @@ Dir Board::dicideDir() {
     auto npw = nextPossibleWorld(grid);
     auto top = npw;
     decltype(npw) npw2, npw3, npw4, npw5, npw6;
-    npw2.reserve(16);
+    std::cout << "size of 1: " << npw.size() << std::endl;
+    npw2.reserve(1024);
     for(auto const& e: npw){
         for(auto const& e2: nextPossibleWorld(e.first))
             npw2.push_back(make_pair(e2.first, e.second));
@@ -181,7 +182,8 @@ Dir Board::dicideDir() {
         top = std::move(npw);
         goto empty;
     }
-    npw3.reserve(64);
+    std::cout << "size of 2: " << npw2.size() << std::endl;
+    npw3.reserve(1024 * 20);
     for(auto const& e: npw2){
         for(auto const& e2: nextPossibleWorld(e.first))
             npw3.push_back(make_pair(e2.first, e.second));
@@ -190,7 +192,8 @@ Dir Board::dicideDir() {
         top = std::move(npw);
         goto empty;
     }
-    npw4.reserve(256);
+    std::cout << "size of 3: " << npw3.size() << std::endl;
+    npw4.reserve(1024 * 512);
     for(auto const& e: npw3){
         for(auto const& e2: nextPossibleWorld(e.first))
             npw4.push_back(make_pair(e2.first, e.second));
@@ -201,11 +204,11 @@ Dir Board::dicideDir() {
     }
     top = npw4;
     if(! nurseryTime(grid)) {
-        std::cout << "before uniq: " << npw4.size() << std::endl;
+        std::cout << "before uniq of 4: " << npw4.size() << std::endl;
         std::sort(std::begin(npw4), std::end(npw4));
         auto newEnd = std::unique(std::begin(npw4), std::end(npw4), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
         npw4.erase(newEnd, std::end(npw4));
-        std::cout << "after uniq: " << npw4.size() << std::endl;
+        std::cout << "after uniq of 4: " << npw4.size() << std::endl;
         npw5.reserve(1024 * 12);
         for(auto const& e: npw4){
             for(auto const& e2: nextPossibleWorld(e.first))
@@ -214,12 +217,12 @@ Dir Board::dicideDir() {
         if(npw5.empty()) goto empty;
         top = npw5;
         // もう一回
-        std::cout << "before uniq: " << npw5.size() << std::endl;
+        std::cout << "before uniq of 5: " << npw5.size() << std::endl;
         std::sort(std::begin(npw5), std::end(npw5));
         newEnd = std::unique(std::begin(npw5), std::end(npw5), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
         npw5.erase(newEnd, std::end(npw5));
-        std::cout << "after uniq: " << npw5.size() << std::endl;
-        npw6.reserve(1024 * 24);
+        std::cout << "after uniq of 5: " << npw5.size() << std::endl;
+        npw6.reserve(1024 * 120);
         for(auto const& e: npw5){
             for(auto const& e2: nextPossibleWorld(e.first))
                 npw6.push_back(make_pair(e2.first, e.second));
