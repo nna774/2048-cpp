@@ -1,5 +1,7 @@
 #include "board.hpp"
+
 #include "koyone.hpp"
+#include "kihime.hpp"
 
 Board::Board(){
     Board("http", "2048.semantics3.com", "80");

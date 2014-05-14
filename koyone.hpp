@@ -25,7 +25,7 @@ Dir Koyone::decideDir() const{
     std::uniform_int_distribution<int> rand4(0,3);
     std::uniform_int_distribution<int> rand10(0,9);
 
-    int const constexpr MIN_LENGTH = 100;
+    // int const constexpr MIN_LENGTH = 100;
     auto npw = Board::nextPossibleWorld(grid);
     auto top = npw;
     decltype(npw) npw2, npw3, npw4, npw5, npw6;
