@@ -1,13 +1,11 @@
 #include "board.hpp"
+#include "koyone.hpp"
 
 Board::Board(){
     Board("http", "2048.semantics3.com", "80");
 }
 
-Board::Board(std::string const, std::string const endpoint, std::string const port) : endpoint(endpoint), seed_gen(), rand4(0,3), rand10(0,9) {
-    std::mt19937 mt(seed_gen());
-    this->mt = mt;
-    
+Board::Board(std::string const, std::string const endpoint, std::string const port) : endpoint(endpoint) {
     struct addrinfo addr;
     addr.ai_family = AF_UNSPEC;
     addr.ai_socktype = SOCK_STREAM;
@@ -133,123 +131,35 @@ void Board::show() const {
     std::cout << "+----+----+----+----+" << std::endl;
 }
 
-int Board::toDead(std::pair<bool,Grid> const& grid) {
-    std::pair<bool,Grid> movedGrid = grid;
-    while(alive(movedGrid.second)){ // 死ぬまで
-        auto oldGrid = movedGrid;
-        int flg(0);
-        int toI = rand4(mt);
-        flg = 1 << (toI+1);
-        auto to = allDirs[toI];
-        movedGrid = movedAndBirth(oldGrid.second, to);
-        if(movedGrid.first == false){
-            while(flg != (1 << 4) + (1 << 3) + (1 << 2) + (1 << 1)){
-                int tmp = rand4(mt);
-                if(1 << tmp & flg) continue; // 既に見た
-                // あった
-                movedGrid = movedAndBirth(oldGrid.second, allDirs[tmp]);
-                flg = 1 << (tmp+1);
-                if(movedGrid.first) goto label; // goto!!
-            }
-            movedGrid = oldGrid;
-            break; // 全部ダメだった
-        }
-    label: ;
-    }
-    return staticEval(movedGrid.second);
-}
-
-bool Board::nurseryTime(Board::Grid const& grid){
-    int const constexpr MATURED = 1024;
-    for(int i(0); i < 4;++i)
-        for(int j(0); j < 4;++j)
-            if(grid[i][j] >= MATURED) return false;
-    return true;
-}
+// int Board::toDead(std::pair<bool,Grid> const& grid) {
+//     std::pair<bool,Grid> movedGrid = grid;
+//     while(alive(movedGrid.second)){ // 死ぬまで
+//         auto oldGrid = movedGrid;
+//         int flg(0);
+//         int toI = rand4(mt);
+//         flg = 1 << (toI+1);
+//         auto to = allDirs[toI];
+//         movedGrid = movedAndBirth(oldGrid.second, to);
+//         if(movedGrid.first == false){
+//             while(flg != (1 << 4) + (1 << 3) + (1 << 2) + (1 << 1)){
+//                 int tmp = rand4(mt);
+//                 if(1 << tmp & flg) continue; // 既に見た
+//                 // あった
+//                 movedGrid = movedAndBirth(oldGrid.second, allDirs[tmp]);
+//                 flg = 1 << (tmp+1);
+//                 if(movedGrid.first) goto label; // goto!!
+//             }
+//             movedGrid = oldGrid;
+//             break; // 全部ダメだった
+//         }
+//     label: ;
+//     }
+//     return staticEval(movedGrid.second);
+// }
 
 Dir Board::decideDir() {
-    int const constexpr MIN_LENGTH = 100;
-    auto npw = nextPossibleWorld(grid);
-    auto top = npw;
-    decltype(npw) npw2, npw3, npw4, npw5, npw6;
-    // std::cout << "size of 1: " << npw.size() << std::endl;
-    npw2.reserve(1024 * 8);
-    for(auto const& e: npw){
-        for(auto const& e2: nextPossibleWorld(e.first))
-            npw2.push_back(make_pair(e2.first, e.second));
-    }
-    if(npw2.empty()) {
-        top = std::move(npw);
-        goto empty;
-    }
-    // std::cout << "size of 2: " << npw2.size() << std::endl;
-    npw3.reserve(1024 * 20);
-    for(auto const& e: npw2){
-        for(auto const& e2: nextPossibleWorld(e.first))
-            npw3.push_back(make_pair(e2.first, e.second));
-    }
-    if(npw3.empty()) {
-        top = std::move(npw);
-        goto empty;
-    }
-    // std::cout << "before uniq of 3: " << npw3.size() << std::endl;
-    std::sort(std::begin(npw3), std::end(npw3));
-    
-    npw3.erase(std::unique(std::begin(npw3), std::end(npw3), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; })
-               , std::end(npw3));
-    // std::cout << "after uniq of 3: " << npw3.size() << std::endl;
-
-    npw4.reserve(1024 * 512);
-    for(auto const& e: npw3){
-        for(auto const& e2: nextPossibleWorld(e.first))
-            npw4.push_back(make_pair(e2.first, e.second));
-    }
-    if(npw4.empty()) {
-        top = std::move(npw);
-        goto empty;
-    }
-    top = npw4;
-    if(! nurseryTime(grid)) {
-        // std::cout << "before uniq of 4: " << npw4.size() << std::endl;
-        std::sort(std::begin(npw4), std::end(npw4));
-        auto newEnd = std::unique(std::begin(npw4), std::end(npw4), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
-        npw4.erase(newEnd, std::end(npw4));
-        // std::cout << "after uniq of 4: " << npw4.size() << std::endl;
-        npw5.reserve(1024 * 12);
-        for(auto const& e: npw4){
-            for(auto const& e2: nextPossibleWorld(e.first))
-                npw5.push_back(make_pair(e2.first, e.second));
-        }
-        if(npw5.empty()) goto empty;
-        top = npw5;
-        // もう一回
-        // std::cout << "before uniq of 5: " << npw5.size() << std::endl;
-        std::sort(std::begin(npw5), std::end(npw5));
-        newEnd = std::unique(std::begin(npw5), std::end(npw5), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
-        npw5.erase(newEnd, std::end(npw5));
-        // std::cout << "after uniq of 5: " << npw5.size() << std::endl;
-        npw6.reserve(1024 * 120);
-        for(auto const& e: npw5){
-            for(auto const& e2: nextPossibleWorld(e.first))
-                npw6.push_back(make_pair(e2.first, e.second));
-        }
-        if(npw6.empty()) goto empty;
-        top = npw6;
-    }
-    // if(top.size() <= MIN_LENGTH){
-    //     decltype(npw) top2;
-    //     for(auto const& e: top){
-    //         for(auto const& e2: nextPossibleWorld(e.first))
-    //             top2.push_back(make_pair(e2.first, e.second));
-    //     }
-    //     if(top2.empty()) goto empty;
-    //     top = top2;
-    // }
-    empty: ;
-    // for(auto const& e:npw3) std::cout << staticEval(e.first) << ", " << dirToInt(e.second) << std::endl;
-    auto max = *std::max_element(std::begin(top), std::end(top), Comp());
-    // std::cout << "Max: " << staticEval(max.first) << ", " << dirToInt(max.second) << std::endl;
-    return max.second;
+    Koyone koyone(grid);
+    return koyone.decideDir();
     // int const MAX_ITERATION = 4000;
     // std::array<unsigned long,4> sums, counts, aves;
     // sums.fill(0);
@@ -288,7 +198,7 @@ Dir Board::decideDir() {
     // return maxDir;
 }
 
-Board::Grid Board::rotate(Board::Grid const& grid, Dir dir) const{
+Board::Grid Board::rotate(Board::Grid const& grid, Dir dir){
     if(dir == Dir::Up) return grid;
     if(dir == Dir::Right)
         return {{{{grid[0][3], grid[1][3], grid[2][3], grid[3][3]}},
@@ -308,7 +218,7 @@ Board::Grid Board::rotate(Board::Grid const& grid, Dir dir) const{
     return {{}}; // never come
 }
 
-void Board::moveUpImp(std::array<int,4>& tmp) const{
+void Board::moveUpImp(std::array<int,4>& tmp){
     bool joined = false;
     bool hit = false;
     for(int i(0); i < 4;++i){
@@ -339,7 +249,7 @@ void Board::moveUpImp(std::array<int,4>& tmp) const{
     }
 }
 
-Board::Grid Board::moveUp(Board::Grid const& grid) const{
+Board::Grid Board::moveUp(Board::Grid const& grid){
     Board::Grid newGrid;
     // for(int i(0); i < 4;++i)
     //     for(int j(0); j < 4;++j)
@@ -356,13 +266,13 @@ Board::Grid Board::moveUp(Board::Grid const& grid) const{
     }
     return newGrid;
 }
-Board::Grid Board::moved(Board::Grid const& grid, Dir dir) const{
+Board::Grid Board::moved(Board::Grid const& grid, Dir dir){
     if(dir != Dir::Up) return rotate((moveUp (rotate(grid, mirror(dir)))), dir);
 
     return moveUp(grid);
 }
 
-bool Board::movable(Board::Grid const& grid, Dir dir) const{
+bool Board::movable(Board::Grid const& grid, Dir dir){
     // auto m = moved(grid, dir);
     // for(int i(0); i < 4; ++i)
     //     for(int j(0); j < 4; ++j)
@@ -371,36 +281,31 @@ bool Board::movable(Board::Grid const& grid, Dir dir) const{
     return moved(grid, dir) != grid;
 }
 
-std::pair<bool,Board::Grid> Board::movedAndBirth(Board::Grid const& grid, Dir dir) { // 動けばfirst はtrue
-    auto m = moved(grid, dir);
-    if(m == grid) return std::make_pair(false, m);
-    int birth = "2222222224"[rand10(mt)] - '0';
-    int zeros(0);
-    for(int i(0); i < 4; ++i)
-        for(int j(0); j < 4; ++j)
-            if(m[i][j] == 0) ++zeros;
-    std::uniform_int_distribution<int> dice(0,zeros-1);
-    int pos = dice(mt);
-    for(int i(0); i < 4; ++i)
-        for(int j(0); j < 4; ++j)
-            if(m[i][j] == 0)
-                if(pos-- == 0) m[i][j] = birth;
-    return std::make_pair(true, m);
-}
+// std::pair<bool,Board::Grid> Board::movedAndBirth(Board::Grid const& grid, Dir dir) { // 動けばfirst はtrue
+//     std::random_device rnd;
+//     std::vector< std::uint_least32_t> v(10);
+//     std::generate(begin(v), end(v), ref(rnd));
+//     std::mt19937 mt(std::seed_seq(begin(v), end(v)));
+    
+//     auto m = moved(grid, dir);
+//     if(m == grid) return std::make_pair(false, m);
+//     int birth = "2222222224"[rand10(mt)] - '0';
+//     int zeros(0);
+//     for(int i(0); i < 4; ++i)
+//         for(int j(0); j < 4; ++j)
+//             if(m[i][j] == 0) ++zeros;
+//     std::uniform_int_distribution<int> dice(0,zeros-1);
+//     int pos = dice(mt);
+//     for(int i(0); i < 4; ++i)
+//         for(int j(0); j < 4; ++j)
+//             if(m[i][j] == 0)
+//                 if(pos-- == 0) m[i][j] = birth;
+//     return std::make_pair(true, m);
+// }
 
-bool Board::alive(Board::Grid const& grid) const{
+bool Board::alive(Board::Grid const& grid) {
     for(int i(0); i < 4;++i) if(movable(grid, allDirs[i])) return true;
     return false;
-}
-int Board::staticEval(Board::Grid const& grid){
-    int const constexpr SPACE_WEIGHT = 500;
-    int sum(0);
-    for(int i(0); i < 4; ++i)
-        for(int j(0); j < 4; ++j)
-            sum += grid[i][j]
-                ? grid[i][j] * log2(grid[i][j])
-                : SPACE_WEIGHT;
-    return sum;
 }
 
 int Board::log2(int i){
@@ -440,7 +345,7 @@ int Board::log2(int i){
     }
 }
 
-Board::GridList_t<std::pair<Board::Grid, Dir>> Board::nextPossibleWorld(Board::Grid const& grid) const{
+Board::GridList_t<std::pair<Board::Grid, Dir>> Board::nextPossibleWorld(Board::Grid const& grid){
     GridList_t<std::pair<Grid, Dir>> vec;
     vec.reserve(128);
     for(auto dir: allDirs){
@@ -451,7 +356,7 @@ Board::GridList_t<std::pair<Board::Grid, Dir>> Board::nextPossibleWorld(Board::G
     return vec;
 }
 
-Board::GridList Board::nextPossibleWorldUp(Board::Grid const& grid) const{
+Board::GridList Board::nextPossibleWorldUp(Board::Grid const& grid){
     auto up = moveUp(grid);
     if(up == grid) return {};
     int zeros(0);
