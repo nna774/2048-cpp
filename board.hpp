@@ -43,7 +43,7 @@ public:
     Board(std::string const protocol, std::string const endpoint, std::string const port);
     bool move(Dir dir); // return value is moved
     void show() const;
-    Dir dicideDir();
+    Dir decideDir();
 private:
     using Grid = std::array<std::array<int,4>,4>;
     std::string const endpoint;

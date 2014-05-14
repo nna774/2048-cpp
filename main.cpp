@@ -14,7 +14,7 @@ int main(int, char**){
 
     try{
         while(1){
-            auto dir = b.dicideDir();
+            auto dir = b.decideDir();
             b.move(dir);
             b.show();
         }

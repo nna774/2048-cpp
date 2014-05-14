@@ -167,7 +167,7 @@ bool Board::nurseryTime(Board::Grid const& grid){
     return true;
 }
 
-Dir Board::dicideDir() {
+Dir Board::decideDir() {
     int const constexpr MIN_LENGTH = 100;
     auto npw = nextPossibleWorld(grid);
     auto top = npw;
