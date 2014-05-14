@@ -53,6 +53,7 @@ public:
     static std::pair<bool,Grid> movedAndBirth(Grid const& , Dir);
     static bool alive(Grid const&);
     static int log2(int);
+    static int pow2(int);
     template<class T>
     using GridList_t = std::vector<T>;
     using GridList = GridList_t<Grid>;
