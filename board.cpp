@@ -124,7 +124,7 @@ bool Board::move(Dir dir){
     // }
 
     if(v.get("over").evaluate_as_boolean()){
-        throw v.serialize(); // 寿命超えるっけ？
+        throw v.serialize();
     }
 //    std::cout << v.get("moved") ;//== "true" << std::endl;
     return v.get("moved").evaluate_as_boolean();
@@ -169,6 +169,7 @@ void Board::show() const {
 // }
 
 Dir Board::decideDir() {
+    Kihime kihime(grid);
     Koyone koyone(grid);
     return koyone.decideDir();
     // int const MAX_ITERATION = 4000;
