@@ -1,5 +1,7 @@
 #pragma once
 
+#include <random>
+
 #include "board.hpp"
 
 class Koyone{

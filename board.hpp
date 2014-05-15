@@ -1,20 +1,9 @@
 #pragma once
 
 #include <string>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <sstream>
-#include <cstdio>
 #include <array>
-#include <iomanip>
-#include <random>
 #include <utility>
-#include <set>
 #include <algorithm>
-#include <functional>
-#include "picojson/picojson.h"
 
 enum class Dir{
     Up,

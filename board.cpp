@@ -1,5 +1,14 @@
 #include "board.hpp"
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <cstdio>
+#include <sstream>
+#include <iomanip>
+#include "picojson/picojson.h"
+
 #include "koyone.hpp"
 #include "kihime.hpp"
 
@@ -115,7 +124,7 @@ bool Board::move(Dir dir){
     // }
 
     if(v.get("over").evaluate_as_boolean()){
-        throw v; // 寿命超えるっけ？
+        throw v.to_str(); // 寿命超えるっけ？
     }
 //    std::cout << v.get("moved") ;//== "true" << std::endl;
     return v.get("moved").evaluate_as_boolean();
