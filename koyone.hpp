@@ -9,6 +9,7 @@ public:
 private:
     Board::Grid grid;
     static int staticEval(Board::Grid const&);
+    static int const constexpr MATURED = 1024;
     static bool nurseryTime(Board::Grid const&);
     struct Comp{
         bool operator()(std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b){
@@ -112,7 +113,6 @@ int Koyone::staticEval(Board::Grid const& grid){
 }
 
 bool Koyone::nurseryTime(Board::Grid const& grid){
-    int const constexpr MATURED = 1024;
     for(int i(0); i < 4;++i)
         for(int j(0); j < 4;++j)
             if(grid[i][j] >= MATURED) return false;

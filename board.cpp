@@ -275,11 +275,6 @@ Board::Grid Board::moved(Board::Grid const& grid, Dir dir){
 }
 
 bool Board::movable(Board::Grid const& grid, Dir dir){
-    // auto m = moved(grid, dir);
-    // for(int i(0); i < 4; ++i)
-    //     for(int j(0); j < 4; ++j)
-    //         if(m[i][j] != grid[i][j]) return true;
-    // return false; 
     return moved(grid, dir) != grid;
 }
 
