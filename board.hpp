@@ -45,7 +45,13 @@ public:
     bool move(Dir dir); // return value is moved
     void show() const;
     Dir decideDir();
-    using Grid = std::array<std::array<int,4>,4>;
+    struct Grid{
+        Grid() { grid.fill(0); }
+        Grid(Grid const& grid) : grid(grid) { }
+        int get(int, int); // [0,15] しか返ってこない
+        int set(int, int, int);
+        std::array<int,4> grid;
+    };
     static Grid rotate(Grid const&, Dir);
     static Grid moveUp(Grid const&);
     static Grid moved(Grid const&, Dir);
