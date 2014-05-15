@@ -71,7 +71,8 @@ Board::Board(std::string const, std::string const endpoint, std::string const po
     for(int i(0); i < 4; ++i){
         picojson::array a = arr[i].get<picojson::array>();
         for(int j(0); j < 4; ++j)
-            grid[i][j] =  a[j].get<double>();
+            // grid[i][j] =  a[j].get<double>()
+                ;
     }
     // for(auto e: grid){
     //     for(auto f: e)
@@ -106,7 +107,8 @@ bool Board::move(Dir dir){
     for(int i(0); i < 4; ++i){
         picojson::array a = arr[i].get<picojson::array>();
         for(int j(0); j < 4; ++j)
-            grid[i][j] =  a[j].get<double>();
+            // grid[i][j] =  a[j].get<double>()
+                ;
     }
     // for(auto e: grid){
     //     for(auto f: e)
@@ -123,13 +125,13 @@ bool Board::move(Dir dir){
 
 void Board::show() const {
     std::cout << "+----+----+----+----+\n";
-    for(auto e: grid){
-        std::cout << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[0])
-                  << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[1])
-                  << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[2])
-                  << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[3])
-                  << '|' << '\n';
-    }
+    // for(auto e: grid){
+    //     std::cout << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[0])
+    //               << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[1])
+    //               << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[2])
+    //               << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[3])
+    //               << '|' << '\n';
+    // }
     std::cout << "+----+----+----+----+" << std::endl;
 }
 
@@ -200,81 +202,85 @@ Dir Board::decideDir() {
     // return maxDir;
 }
 
-Board::Grid Board::rotate(Board::Grid const& grid, Dir dir){
+Board::Grid Board::rotate(Board::Grid grid, Dir dir){
     if(dir == Dir::Up) return grid;
     if(dir == Dir::Right)
-        return {{{{grid[0][3], grid[1][3], grid[2][3], grid[3][3]}},
-                {{ grid[0][2], grid[1][2], grid[2][2], grid[3][2]}},
-                {{ grid[0][1], grid[1][1], grid[2][1], grid[3][1]}},
-                {{ grid[0][0], grid[1][0], grid[2][0], grid[3][0]}} }};
+        return // {{{{grid[0][3], grid[1][3], grid[2][3], grid[3][3]}},
+               //  {{ grid[0][2], grid[1][2], grid[2][2], grid[3][2]}},
+               //  {{ grid[0][1], grid[1][1], grid[2][1], grid[3][1]}},
+               //  {{ grid[0][0], grid[1][0], grid[2][0], grid[3][0]}} }}
+    0;
     if(dir == Dir::Down)
-        return {{{{grid[3][3], grid[3][2], grid[3][1], grid[3][0]}},
-                {{ grid[2][3], grid[2][2], grid[2][1], grid[2][0]}},
-                {{ grid[1][3], grid[1][2], grid[1][1], grid[1][0]}},
-                {{ grid[0][3], grid[0][2], grid[0][1], grid[0][0]}} }};
+        return // {{{{grid[3][3], grid[3][2], grid[3][1], grid[3][0]}},
+               //  {{ grid[2][3], grid[2][2], grid[2][1], grid[2][0]}},
+               //  {{ grid[1][3], grid[1][2], grid[1][1], grid[1][0]}},
+               //  {{ grid[0][3], grid[0][2], grid[0][1], grid[0][0]}} }}
+    0;
     if(dir == Dir::Left)
-        return {{{{grid[3][0], grid[2][0], grid[1][0], grid[0][0]}},
-                {{ grid[3][1], grid[2][1], grid[1][1], grid[0][1]}},
-                {{ grid[3][2], grid[2][2], grid[1][2], grid[0][2]}},
-                {{ grid[3][3], grid[2][3], grid[1][3], grid[0][3]}} }};
-    return {{}}; // never come
+        return // {{{{grid[3][0], grid[2][0], grid[1][0], grid[0][0]}},
+               //  {{ grid[3][1], grid[2][1], grid[1][1], grid[0][1]}},
+               //  {{ grid[3][2], grid[2][2], grid[1][2], grid[0][2]}},
+               //  {{ grid[3][3], grid[2][3], grid[1][3], grid[0][3]}} }}
+    0;
+    return 0; // never come
 }
 
-void Board::moveUpImp(std::array<int,4>& tmp){
-    bool joined = false;
-    bool hit = false;
-    for(int i(0); i < 4;++i){
-        joined = false;
-        if(tmp[i] == 0) continue;
-        hit = false;
-        for(int j(i-1); j >= 0;--j){
-            if(tmp[j] == 0) continue;
-            if(tmp[j] == tmp[i] && !joined){
-                tmp[j] *= 2;
-                tmp[i] = 0;
-                joined = true;
-            }else{
-                if(j + 1 != i){
-                    tmp[j+1] = tmp[i];
-                    tmp[i] = 0;
-                }
-                joined = false;
-            }
-            hit = true;
-            break;
-        }
-        if(i != 0 && ! hit){
-            tmp[0] = tmp[i];
-            tmp[i] = 0;
-            joined = false;
-        }
-    }
+int Board::moveUpImp(int tmp){
+    // bool joined = false;
+    // bool hit = false;
+    // for(int i(0); i < 4;++i){
+    //     joined = false;
+    //     if(tmp[i] == 0) continue;
+    //     hit = false;
+    //     for(int j(i-1); j >= 0;--j){
+    //         if(tmp[j] == 0) continue;
+    //         if(tmp[j] == tmp[i] && !joined){
+    //             tmp[j] *= 2;
+    //             tmp[i] = 0;
+    //             joined = true;
+    //         }else{
+    //             if(j + 1 != i){
+    //                 tmp[j+1] = tmp[i];
+    //                 tmp[i] = 0;
+    //             }
+    //             joined = false;
+    //         }
+    //         hit = true;
+    //         break;
+    //     }
+    //     if(i != 0 && ! hit){
+    //         tmp[0] = tmp[i];
+    //         tmp[i] = 0;
+    //         joined = false;
+    //     }
+    // }
+    return 0;
 }
 
-Board::Grid Board::moveUp(Board::Grid const& grid){
+Board::Grid Board::moveUp(Board::Grid grid){
     Board::Grid newGrid;
     // for(int i(0); i < 4;++i)
     //     for(int j(0); j < 4;++j)
     //         newGrid[i][j]=0;
-    for(int i(0); i < 4;++i){
-        std::array<int,4> tmp;
-        for(int j(0); j < 4;++j){
-            tmp[j] = grid[j][i];
-        }
-        moveUpImp(tmp);
-        for(int j(0); j < 4;++j){
-            newGrid[j][i] = tmp[j];
-        }
-    }
+    // for(int i(0); i < 4;++i){
+    //     std::array<int,4> tmp;
+    //     for(int j(0); j < 4;++j){
+    //         tmp[j] = grid[j][i];
+    //     }
+    //     moveUpImp(tmp);
+    //     for(int j(0); j < 4;++j){
+    //         newGrid[j][i] = tmp[j];
+    //     }
+    // }
     return newGrid;
 }
-Board::Grid Board::moved(Board::Grid const& grid, Dir dir){
+Board::Grid Board::moved(Board::Grid grid, Dir dir){
     if(dir != Dir::Up) return rotate((moveUp (rotate(grid, mirror(dir)))), dir);
 
     return moveUp(grid);
 }
 
-bool Board::movable(Board::Grid const& grid, Dir dir){
+bool Board::movable(Board::Grid grid, Dir dir){
     // auto m = moved(grid, dir);
     // for(int i(0); i < 4; ++i)
     //     for(int j(0); j < 4; ++j)
@@ -305,7 +311,7 @@ bool Board::movable(Board::Grid const& grid, Dir dir){
 //     return std::make_pair(true, m);
 // }
 
-bool Board::alive(Board::Grid const& grid) {
+bool Board::alive(Board::Grid grid) {
     for(int i(0); i < 4;++i) if(movable(grid, allDirs[i])) return true;
     return false;
 }
@@ -351,7 +357,7 @@ int Board::pow2(int i){
     return table[i];
 }
 
-Board::GridList_t<std::pair<Board::Grid, Dir>> Board::nextPossibleWorld(Board::Grid const& grid){
+Board::GridList_t<std::pair<Board::Grid, Dir>> Board::nextPossibleWorld(Board::Grid grid){
     GridList_t<std::pair<Grid, Dir>> vec;
     vec.reserve(128);
     for(auto dir: allDirs){
@@ -362,21 +368,21 @@ Board::GridList_t<std::pair<Board::Grid, Dir>> Board::nextPossibleWorld(Board::G
     return vec;
 }
 
-Board::GridList Board::nextPossibleWorldUp(Board::Grid const& grid){
+Board::GridList Board::nextPossibleWorldUp(Board::Grid grid){
     auto up = moveUp(grid);
     if(up == grid) return {};
-    int zeros(0);
-    for(int i(0); i < 4; ++i)
-        for(int j(0); j < 4; ++j)
-            if(up[i][j] == 0) ++zeros;
-    GridList tmps(zeros * 2, up);
-    int cnt(0);
-    for(int i(0); i < 4; ++i)
-        for(int j(0); j < 4; ++j)
-            if(up[j][i] == 0){
-                tmps[cnt][j][i] = 2;
-                tmps[cnt+1][j][i] = 4;
-            }
-    return tmps;
+    // int zeros(0);
+    // for(int i(0); i < 4; ++i)
+    //     for(int j(0); j < 4; ++j)
+    //         if(up[i][j] == 0) ++zeros;
+    // GridList tmps(zeros * 2, up);
+    // int cnt(0);
+    // for(int i(0); i < 4; ++i)
+    //     for(int j(0); j < 4; ++j)
+    //         if(up[j][i] == 0){
+    //             tmps[cnt][j][i] = 2;
+    //             tmps[cnt+1][j][i] = 4;
+    //         }
+    // return tmps;
 }
 

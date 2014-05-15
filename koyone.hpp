@@ -21,6 +21,7 @@ private:
 };
 
 Dir Koyone::decideDir() const{
+    using std::make_pair;
     std::mt19937 mt;
     std::uniform_int_distribution<int> rand4(0,3);
     std::uniform_int_distribution<int> rand10(0,9);
@@ -103,18 +104,18 @@ Dir Koyone::decideDir() const{
 int Koyone::staticEval(Board::Grid const& grid){
     int const constexpr SPACE_WEIGHT = 500;
     int sum(0);
-    for(int i(0); i < 4; ++i)
-        for(int j(0); j < 4; ++j)
-            sum += grid[i][j]
-                ? grid[i][j] * log2(grid[i][j])
-                : SPACE_WEIGHT;
+    // for(int i(0); i < 4; ++i)
+    //     for(int j(0); j < 4; ++j)
+    //         sum += grid[i][j]
+    //             ? grid[i][j] * log2(grid[i][j])
+    //             : SPACE_WEIGHT;
     return sum;
 }
 
 bool Koyone::nurseryTime(Board::Grid const& grid){
     int const constexpr MATURED = 1024;
-    for(int i(0); i < 4;++i)
-        for(int j(0); j < 4;++j)
-            if(grid[i][j] >= MATURED) return false;
+    // for(int i(0); i < 4;++i)
+    //     for(int j(0); j < 4;++j)
+    //         if(grid[i][j] >= MATURED) return false;
     return true;
 }

@@ -45,33 +45,30 @@ public:
     bool move(Dir dir); // return value is moved
     void show() const;
     Dir decideDir();
-    struct Grid{
-        Grid() { grid.fill(0); }
-        Grid(Grid const& grid) : grid(grid) { }
-        int get(int, int); // [0,15] しか返ってこない
-        int set(int, int, int);
-        std::array<int,4> grid;
-    };
-    static Grid rotate(Grid const&, Dir);
-    static Grid moveUp(Grid const&);
-    static Grid moved(Grid const&, Dir);
-    static bool movable(Grid const&, Dir);
-    static std::pair<bool,Grid> movedAndBirth(Grid const& , Dir);
-    static bool alive(Grid const&);
+    using Grid = uint64_t;
+    static int get(Grid, int i, int j); // grid[i][j]
+    static Grid set(Grid, int i, int j, int v);
+    static Grid& set(Grid&, int i, int j, int v);
+    static Grid rotate(Grid, Dir);
+    static Grid moveUp(Grid);
+    static Grid moved(Grid, Dir);
+    static bool movable(Grid, Dir);
+    static std::pair<bool,Grid> movedAndBirth(Grid, Dir);
+    static bool alive(Grid);
     static int log2(int);
     static int pow2(int);
     template<class T>
     using GridList_t = std::vector<T>;
     using GridList = GridList_t<Grid>;
-    static GridList_t<std::pair<Grid, Dir>> nextPossibleWorld(Grid const&);
+    static GridList_t<std::pair<Grid, Dir>> nextPossibleWorld(Grid);
 private:
     std::string const endpoint;
     int fd;
     std::string sessionID;
     std::random_device seed_gen;
-    int toDead(std::pair<bool,Grid> const&);
+    int toDead(std::pair<bool,Grid>);
     Grid grid;
-    static void moveUpImp(std::array<int,4>&);
-    static GridList nextPossibleWorldUp(Grid const&);
+    static int moveUpImp(int);
+    static GridList nextPossibleWorldUp(Grid);
 };
 
