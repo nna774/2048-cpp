@@ -19,7 +19,7 @@ int main(int, char**){
             b.show();
         }
     }
-    catch (picojson::value v){
+    catch (std::string v){
         std::cout << v << std::endl;
         b.show();
     }

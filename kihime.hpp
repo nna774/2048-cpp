@@ -1,5 +1,8 @@
 #pragma once
 
+#include <functional>
+#include <random>
+
 #include "board.hpp"
 
 class Kihime{

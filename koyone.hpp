@@ -1,5 +1,7 @@
 #pragma once
 
+#include <random>
+
 #include "board.hpp"
 
 class Koyone{
@@ -10,6 +12,7 @@ private:
     Board::Grid grid;
     static int staticEval(Board::Grid);
     static bool nurseryTime(Board::Grid);
+    static int const constexpr MATURED = 1024;
     struct Comp{
         bool operator()(std::pair<Board::Grid, Dir> a, std::pair<Board::Grid, Dir> b){
             return staticEval(a.first) < staticEval(b.first);
