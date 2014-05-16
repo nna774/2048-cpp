@@ -107,18 +107,18 @@ Dir Koyone::decideDir() const{
 int Koyone::staticEval(Board::Grid grid){
     int const constexpr SPACE_WEIGHT = 500;
     int sum(0);
-    // for(int i(0); i < 4; ++i)
-    //     for(int j(0); j < 4; ++j)
-    //         sum += grid[i][j]
-    //             ? grid[i][j] * log2(grid[i][j])
-    //             : SPACE_WEIGHT;
+    for(int i(0); i < 4; ++i)
+        for(int j(0); j < 4; ++j)
+            sum += Board::get(grid, i, j)
+                ? Board::get(grid, i, j) * log2(Board::get(grid, i, j))
+                : SPACE_WEIGHT;
     return sum;
 }
 
 bool Koyone::nurseryTime(Board::Grid grid){
     int const constexpr MATURED = 1024;
-    // for(int i(0); i < 4;++i)
-    //     for(int j(0); j < 4;++j)
-    //         if(grid[i][j] >= MATURED) return false;
+    for(int i(0); i < 4;++i)
+        for(int j(0); j < 4;++j)
+            if(Board::get(grid, i, j) >= MATURED) return false;
     return true;
 }

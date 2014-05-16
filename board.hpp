@@ -4,6 +4,7 @@
 #include <array>
 #include <utility>
 #include <algorithm>
+#include <cstdint>
 
 enum class Dir{
     Up,
@@ -36,8 +37,8 @@ public:
     Dir decideDir();
     using Grid = uint64_t;
     static int get(Grid, int i, int j); // grid[i][j]
-    static Grid set(Grid, int i, int j, int v);
-    static Grid& set(Grid&, int i, int j, int v);
+    static Grid set(Grid const, int i, int j, int v);
+    // static Grid& set(Grid&, int i, int j, int v);
     static Grid rotate(Grid, Dir);
     static Grid moveUp(Grid);
     static Grid moved(Grid, Dir);
@@ -51,6 +52,7 @@ public:
     using GridList = GridList_t<Grid>;
     static GridList_t<std::pair<Grid, Dir>> nextPossibleWorld(Grid);
 private:
+    static Grid const constexpr allUp = UINT64_C(0xFFFFFFFFFFFFFFFF);
     std::string const endpoint;
     int fd;
     std::string sessionID;

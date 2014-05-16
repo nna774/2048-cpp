@@ -141,12 +141,22 @@ void Board::show() const {
     //               << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[3])
     //               << '|' << '\n';
     // }
+    for(int i(0); i < 4; ++i)
+        std::cout << '|' << std::setfill(' ') << std::setw(4) << std::right << get(grid, i, 0)
+                  << '|' << std::setfill(' ') << std::setw(4) << std::right << get(grid, i, 1)
+                  << '|' << std::setfill(' ') << std::setw(4) << std::right << get(grid, i, 2)
+                  << '|' << std::setfill(' ') << std::setw(4) << std::right << get(grid, i, 3)
+                  << '|' << '\n';
     std::cout << "+----+----+----+----+" << std::endl;
 }
 
 int Board::get(Board::Grid grid, int i, int j){
     int pos = i * 16 + j * 4;
     return grid >> pos & 0b1111;
+}
+Board::Grid Board::set(Board::Grid const grid, int i, int j, int v){
+    int pos = i * 16 + j * 4;
+    return grid | v << pos; // あふれてるかも
 }
 
 // int Board::toDead(std::pair<bool,Grid> const& grid) {
@@ -272,20 +282,17 @@ int Board::moveUpImp(int tmp){
 }
 
 Board::Grid Board::moveUp(Board::Grid grid){
-    Board::Grid newGrid;
-    // for(int i(0); i < 4;++i)
-    //     for(int j(0); j < 4;++j)
-    //         newGrid[i][j]=0;
-    // for(int i(0); i < 4;++i){
-    //     std::array<int,4> tmp;
-    //     for(int j(0); j < 4;++j){
-    //         tmp[j] = grid[j][i];
-    //     }
-    //     moveUpImp(tmp);
-    //     for(int j(0); j < 4;++j){
-    //         newGrid[j][i] = tmp[j];
-    //     }
-    // }
+    Board::Grid newGrid(0);
+    for(int i(0); i < 4;++i){
+        int tmp(0);
+        for(int j(0); j < 4;++j){
+            tmp |= get(grid, j, i) << (j * 4) ;
+        }
+        moveUpImp(tmp);
+        for(int j(0); j < 4;++j){
+            newGrid = set(newGrid, j, i, tmp >> (j * 4) & 0b1111);
+        }
+    }
     return newGrid;
 }
 Board::Grid Board::moved(Board::Grid grid, Dir dir){
