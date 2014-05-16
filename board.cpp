@@ -135,6 +135,11 @@ void Board::show() const {
     std::cout << "+----+----+----+----+" << std::endl;
 }
 
+int Board::get(Board::Grid grid, int i, int j){
+    int pos = i * 16 + j * 4;
+    return grid >> pos & 0b1111;
+}
+
 // int Board::toDead(std::pair<bool,Grid> const& grid) {
 //     std::pair<bool,Grid> movedGrid = grid;
 //     while(alive(movedGrid.second)){ // 死ぬまで

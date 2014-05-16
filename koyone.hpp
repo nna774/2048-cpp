@@ -4,17 +4,17 @@
 
 class Koyone{
 public:
-    Koyone(Board::Grid const& grid) : grid(grid){ }
+    Koyone(Board::Grid grid) : grid(grid){ }
     Dir decideDir() const;
 private:
     Board::Grid grid;
-    static int staticEval(Board::Grid const&);
-    static bool nurseryTime(Board::Grid const&);
+    static int staticEval(Board::Grid);
+    static bool nurseryTime(Board::Grid);
     struct Comp{
-        bool operator()(std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b){
+        bool operator()(std::pair<Board::Grid, Dir> a, std::pair<Board::Grid, Dir> b){
             return staticEval(a.first) < staticEval(b.first);
         }
-        bool operator()(Board::Grid const& a, Board::Grid const& b){
+        bool operator()(Board::Grid a, Board::Grid b){
             return staticEval(a) < staticEval(b);
         }
     };
@@ -101,7 +101,7 @@ Dir Koyone::decideDir() const{
     return max.second;
 }
 
-int Koyone::staticEval(Board::Grid const& grid){
+int Koyone::staticEval(Board::Grid grid){
     int const constexpr SPACE_WEIGHT = 500;
     int sum(0);
     // for(int i(0); i < 4; ++i)
@@ -112,7 +112,7 @@ int Koyone::staticEval(Board::Grid const& grid){
     return sum;
 }
 
-bool Koyone::nurseryTime(Board::Grid const& grid){
+bool Koyone::nurseryTime(Board::Grid grid){
     int const constexpr MATURED = 1024;
     // for(int i(0); i < 4;++i)
     //     for(int j(0); j < 4;++j)
