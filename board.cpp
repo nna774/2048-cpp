@@ -136,13 +136,6 @@ bool Board::move(Dir dir){
 
 void Board::show() const {
     std::cout << "+----+----+----+----+\n";
-    // for(auto e: grid){
-    //     std::cout << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[0])
-    //               << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[1])
-    //               << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[2])
-    //               << '|' << std::setfill(' ') << std::setw(4) << std::right << int(e[3])
-    //               << '|' << '\n';
-    // }
     for(int i(0); i < 4; ++i)
         std::cout << '|' << std::setfill(' ') << std::setw(4) << std::right << pow2(get(grid, i, 0))
                   << '|' << std::setfill(' ') << std::setw(4) << std::right << pow2(get(grid, i, 1))
@@ -265,39 +258,6 @@ Board::Grid Board::gridMirror(Board::Grid grid){
         ((grid & dhlp) << 12);
 }
 
-Board::Grid Board::moveLeft(Board::Grid grid){
-    for(int k(0); k < 4;++k){
-        bool joined = false;
-        bool hit = false;
-        for(int i(0); i < 4;++i){
-            // joined = false;
-            if(get(grid, k, i) == 0) continue;
-            hit = false;
-            for(int j(i-1); j >= 0;--j){
-                if(get(grid, k, j) == 0) continue;
-                if(get(grid, k, j) == get(grid, k, i) && !joined){
-                    grid = set(grid, k, j, get(grid, k, j) + 1);
-                    grid = set(grid, k, i, 0);
-                    joined = true;
-                }else{
-                    if(j + 1 != i){
-                        grid = set(grid, k, j+1, get(grid, k, i));
-                        grid = set(grid, k, i, 0);
-                    }
-                    joined = false;
-                }
-                hit = true;
-                break;
-            }
-            if(i != 0 && ! hit){
-                grid = set(grid, k, 0, get(grid, k, i));
-                grid = set(grid, k, i, 0);
-                // joined = false;
-            }
-        }
-    }
-    return grid;
-}
 Board::Grid Board::moved(Board::Grid grid, Dir dir){
     if(dir == Dir::Up) return transpose(moveLeft(transpose(grid)));
     if(dir == Dir::Down) return transpose(gridMirror(moveLeft(gridMirror(transpose(grid)))));
@@ -306,11 +266,6 @@ Board::Grid Board::moved(Board::Grid grid, Dir dir){
 }
 
 bool Board::movable(Board::Grid grid, Dir dir){
-    // auto m = moved(grid, dir);
-    // for(int i(0); i < 4; ++i)
-    //     for(int j(0); j < 4; ++j)
-    //         if(m[i][j] != grid[i][j]) return true;
-    // return false; 
     return moved(grid, dir) != grid;
 }
 
