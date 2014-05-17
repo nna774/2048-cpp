@@ -75,13 +75,14 @@ Board::Board(std::string const, std::string const endpoint, std::string const po
     picojson::value v;
     is03 >> v;
     // std::cout << v;
+    grid = UINT64_C(0);
     auto g = v.get("grid");
     picojson::array arr = g.get<picojson::array>();
     for(int i(0); i < 4; ++i){
         picojson::array a = arr[i].get<picojson::array>();
         for(int j(0); j < 4; ++j)
             // grid[i][j] =  a[j].get<double>()
-                ;
+            grid = set(grid, i, j, log2(a[j].get<double>()));
     }
     // for(auto e: grid){
     //     for(auto f: e)
@@ -110,6 +111,7 @@ bool Board::move(Dir dir){
     picojson::value v;
     is03 >> v;
 
+    grid = UINT64_C(0);
     // std::cout << v << std::endl;
     auto g = v.get("grid");
     picojson::array arr = g.get<picojson::array>();
@@ -117,7 +119,7 @@ bool Board::move(Dir dir){
         picojson::array a = arr[i].get<picojson::array>();
         for(int j(0); j < 4; ++j)
             // grid[i][j] =  a[j].get<double>()
-                ;
+            grid = set(grid, i, j, log2(a[j].get<double>()));
     }
     // for(auto e: grid){
     //     for(auto f: e)
@@ -152,11 +154,11 @@ void Board::show() const {
 
 int Board::get(Board::Grid grid, int i, int j){
     int pos = i * 16 + j * 4;
-    return grid >> pos & 0b1111;
+    return (grid >> pos) & 0b1111;
 }
 Board::Grid Board::set(Board::Grid const grid, int i, int j, int v){
     int pos = i * 16 + j * 4;
-    return (grid & ~(0b1111 << pos)) | (v & 0b1111) << pos; // あふれてるかも
+    return (grid & ~(UINT64_C(0b1111) << pos)) | ((v & UINT64_C(0b1111)) << pos); // あふれてるかも
 }
 
 // int Board::toDead(std::pair<bool,Grid> const& grid) {
@@ -186,6 +188,8 @@ Board::Grid Board::set(Board::Grid const grid, int i, int j, int v){
 // }
 
 Dir Board::decideDir() {
+    static int cnt = 0;
+    return allDirs[cnt++%4];
     Kihime kihime(grid);
     Koyone koyone(grid);
     return koyone.decideDir();
@@ -248,6 +252,16 @@ Board::Grid Board::rotate(Board::Grid grid, Dir dir){
                //  {{ grid[3][3], grid[2][3], grid[1][3], grid[0][3]}} }}
     0;
     return 0; // never come
+}
+
+Board::Grid Board::transpose(Board::Grid grid){
+    uint64_t
+        cdgh = UINT64_C(0x00FF00FF00000000),
+        ijmn = UINT64_C(0x00000000FF00FF00),
+        bdjl = UINT64_C(0x0F0F00000F0F0000),
+        egmo = UINT64_C(0x0000F0F00000F0F0);
+    grid = (grid & ~cdgh & ~ijmn) | ((grid & cdgh) >> 24) | ((grid & ijmn) << 24);
+    return (grid & ~bdjl & ~egmo) | ((grid & bdjl) >> 12) | ((grid & egmo) << 12);
 }
 
 int Board::moveUpImp(int tmp){
@@ -377,8 +391,9 @@ int Board::log2(int i){
         return 15;
     }
 }
+
 int Board::pow2(int i){
-    static int const constexpr table[] = {0,2,4,8,16,32,64,128,256,521,1024,2048,4096,8192,16384};
+    static int const constexpr table[] = {0,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384};
     return table[i];
 }
 

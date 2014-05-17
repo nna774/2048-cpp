@@ -40,6 +40,7 @@ public:
     static Grid set(Grid const, int i, int j, int v);
     // static Grid& set(Grid&, int i, int j, int v);
     static Grid rotate(Grid, Dir);
+    static Grid transpose(Grid);
     static Grid moveUp(Grid);
     static Grid moved(Grid, Dir);
     static bool movable(Grid, Dir);
@@ -52,12 +53,12 @@ public:
     using GridList = GridList_t<Grid>;
     static GridList_t<std::pair<Grid, Dir>> nextPossibleWorld(Grid);
 private:
-    static Grid const constexpr allUp = UINT64_C(0xFFFFFFFFFFFFFFFF);
     std::string const endpoint;
     int fd;
     std::string sessionID;
     std::random_device seed_gen;
     int toDead(std::pair<bool,Grid>);
+public:
     Grid grid;
     static int moveUpImp(int);
     static GridList nextPossibleWorldUp(Grid);
