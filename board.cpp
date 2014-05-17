@@ -142,10 +142,10 @@ void Board::show() const {
     //               << '|' << '\n';
     // }
     for(int i(0); i < 4; ++i)
-        std::cout << '|' << std::setfill(' ') << std::setw(4) << std::right << get(grid, i, 0)
-                  << '|' << std::setfill(' ') << std::setw(4) << std::right << get(grid, i, 1)
-                  << '|' << std::setfill(' ') << std::setw(4) << std::right << get(grid, i, 2)
-                  << '|' << std::setfill(' ') << std::setw(4) << std::right << get(grid, i, 3)
+        std::cout << '|' << std::setfill(' ') << std::setw(4) << std::right << pow2(get(grid, i, 0))
+                  << '|' << std::setfill(' ') << std::setw(4) << std::right << pow2(get(grid, i, 1))
+                  << '|' << std::setfill(' ') << std::setw(4) << std::right << pow2(get(grid, i, 2))
+                  << '|' << std::setfill(' ') << std::setw(4) << std::right << pow2(get(grid, i, 3))
                   << '|' << '\n';
     std::cout << "+----+----+----+----+" << std::endl;
 }
