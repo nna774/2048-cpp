@@ -41,7 +41,7 @@ public:
     // static Grid& set(Grid&, int i, int j, int v);
     static Grid rotate(Grid, Dir);
     static Grid transpose(Grid);
-    static Grid moveUp(Grid);
+    static Grid moveLeft(Grid);
     static Grid moved(Grid, Dir);
     static bool movable(Grid, Dir);
     static std::pair<bool,Grid> movedAndBirth(Grid, Dir);

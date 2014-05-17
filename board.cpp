@@ -158,7 +158,7 @@ int Board::get(Board::Grid grid, int i, int j){
 }
 Board::Grid Board::set(Board::Grid const grid, int i, int j, int v){
     int pos = i * 16 + j * 4;
-    return (grid & ~(UINT64_C(0b1111) << pos)) | ((v & UINT64_C(0b1111)) << pos); // あふれてるかも
+    return (grid & ~(UINT64_C(0b1111) << pos)) | ((v & (UINT64_C(0b1111))) << pos); // あふれてるかも
 }
 
 // int Board::toDead(std::pair<bool,Grid> const& grid) {
@@ -264,59 +264,78 @@ Board::Grid Board::transpose(Board::Grid grid){
     return (grid & ~bdjl & ~egmo) | ((grid & bdjl) >> 12) | ((grid & egmo) << 12);
 }
 
-int Board::moveUpImp(int tmp){
-    bool joined = false;
-    bool hit = false;
-    for(int i(0); i < 4;++i){
-        joined = false;
-        if((tmp >> (i * 4) & 0b1111) == 0) continue;
-        hit = false;
-        for(int j(i-1); j >= 0;--j){
-            if((tmp >> (j * 4) & 0b1111) == 0) continue;
-            if((tmp >> (j * 4) & 0b1111) == (tmp >> (i * 4) & 0b1111) && !joined){
-                //tmp[j] *= 2;
-                tmp += 1 << (j * 4);
-                tmp |= ~(0b1111 << i);
-                joined = true;
-            }else{
-                if(j + 1 != i){
-                    // tmp[j+1] = tmp >> (i * 4) & 0b1111;
-                    tmp |= (tmp & ((~0b1111) << (j + 1) * 4 )) | (tmp >> (i * 4) & 0b1111) << (j + 1) * 4;
-                    tmp |= ~(0b1111 << i);
+// int Board::moveUpImp(int tmp){
+//     bool joined = false;
+//     bool hit = false;
+//     for(int i(0); i < 4;++i){
+//         joined = false;
+//         if((tmp >> (i * 4) & 0b1111) == 0) continue;
+//         hit = false;
+//         for(int j(i-1); j >= 0;--j){
+//             if((tmp >> (j * 4) & 0b1111) == 0) continue;
+//             if((tmp >> (j * 4) & 0b1111) == (tmp >> (i * 4) & 0b1111) && !joined){
+//                 //tmp[j] *= 2;
+//                 tmp += 1 << (j * 4);
+//                 tmp |= ~(0b1111 << i);
+//                 joined = true;
+//             }else{
+//                 if(j + 1 != i){
+//                     // tmp[j+1] = tmp >> (i * 4) & 0b1111;
+//                     tmp |= (tmp & ((~0b1111) << (j + 1) * 4 )) | (tmp >> (i * 4) & 0b1111) << (j + 1) * 4;
+//                     tmp |= ~(0b1111 << i);
+//                 }
+//                 joined = false;
+//             }
+//             hit = true;
+//             break;
+//         }
+//         if(i != 0 && ! hit){
+//             // tmp[0] = tmp >> (i * 4) & 0b1111;
+//             tmp |= (tmp & (~0b1111)) | (tmp >> (i * 4) & 0b1111);
+//             tmp |= ~(0b1111 << i);
+//             joined = false;
+//         }
+//     }
+//     return tmp;
+// }
+
+Board::Grid Board::moveLeft(Board::Grid grid){
+    for(int k(0); k < 4;++k){
+        bool joined = false;
+        bool hit = false;
+        for(int i(0); i < 4;++i){
+            joined = false;
+            if(get(grid, k, i) == 0) continue;
+            hit = false;
+            for(int j(i-1); j >= 0;--j){
+                if(get(grid, k, j) == 0) continue;
+                if(get(grid, k, j) == get(grid, k, i) && !joined){
+                    grid = set(grid, k, j, get(grid, k, j) + 1);
+                    grid = set(grid, k, i, 0);
+                    joined = true;
+                }else{
+                    if(j + 1 != i){
+                        grid = set(grid, k, j+1, get(grid, k, i));
+                        grid = set(grid, k, i, 0);
+                    }
+                    joined = false;
                 }
+                hit = true;
+                break;
+            }
+            if(i != 0 && ! hit){
+                grid = set(grid, k, 0, get(grid, k, i));
+                grid = set(grid, k, i, 0);
                 joined = false;
             }
-            hit = true;
-            break;
-        }
-        if(i != 0 && ! hit){
-            // tmp[0] = tmp >> (i * 4) & 0b1111;
-            tmp |= (tmp & (~0b1111)) | (tmp >> (i * 4) & 0b1111);
-            tmp |= ~(0b1111 << i);
-            joined = false;
         }
     }
-    return 0;
-}
-
-Board::Grid Board::moveUp(Board::Grid grid){
-    Board::Grid newGrid(0);
-    for(int i(0); i < 4;++i){
-        int tmp(0);
-        for(int j(0); j < 4;++j){
-            tmp |= get(grid, j, i) << (j * 4) ;
-        }
-        moveUpImp(tmp);
-        for(int j(0); j < 4;++j){
-            newGrid = set(newGrid, j, i, tmp >> (j * 4) & 0b1111);
-        }
-    }
-    return newGrid;
+    return grid;
 }
 Board::Grid Board::moved(Board::Grid grid, Dir dir){
-    if(dir != Dir::Up) return rotate((moveUp (rotate(grid, mirror(dir)))), dir);
+    // if(dir != Dir::Up) return rotate((moveUp (rotate(grid, mirror(dir)))), dir);
 
-    return moveUp(grid);
+    return moveLeft(grid);
 }
 
 bool Board::movable(Board::Grid grid, Dir dir){
@@ -409,8 +428,8 @@ Board::GridList_t<std::pair<Board::Grid, Dir>> Board::nextPossibleWorld(Board::G
 }
 
 Board::GridList Board::nextPossibleWorldUp(Board::Grid grid){
-    auto up = moveUp(grid);
-    if(up == grid) return {};
+    auto left = moveLeft(grid);
+    if(left == grid) return {};
     // int zeros(0);
     // for(int i(0); i < 4; ++i)
     //     for(int j(0); j < 4; ++j)
