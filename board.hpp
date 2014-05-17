@@ -41,6 +41,7 @@ public:
     // static Grid& set(Grid&, int i, int j, int v);
     static Grid rotate(Grid, Dir);
     static Grid transpose(Grid);
+    static Grid gridMirror(Grid);
     static Grid moveLeft(Grid);
     static Grid moved(Grid, Dir);
     static bool movable(Grid, Dir);

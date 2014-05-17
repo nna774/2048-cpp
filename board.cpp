@@ -264,6 +264,20 @@ Board::Grid Board::transpose(Board::Grid grid){
     return (grid & ~bdjl & ~egmo) | ((grid & bdjl) >> 12) | ((grid & egmo) << 12);
 }
 
+Board::Grid Board::gridMirror(Board::Grid grid){
+    uint64_t
+        aeim = UINT64_C(0xF000F000F000F000),
+        bfin = UINT64_C(0x0F000F000F000F00),
+        cgko = UINT64_C(0x00F000F000F000F0),
+        dhlp = UINT64_C(0x000F000F000F000F);
+    return
+        ((grid & aeim) >> 12)|
+        ((grid & bfin) >> 4) |
+        ((grid & cgko) << 4) |
+        ((grid & dhlp) << 12);
+}
+
+
 // int Board::moveUpImp(int tmp){
 //     bool joined = false;
 //     bool hit = false;
