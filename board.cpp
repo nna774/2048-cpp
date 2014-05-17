@@ -234,23 +234,11 @@ Dir Board::decideDir() {
 Board::Grid Board::rotate(Board::Grid grid, Dir dir){
     if(dir == Dir::Up) return grid;
     if(dir == Dir::Right)
-        return // {{{{grid[0][3], grid[1][3], grid[2][3], grid[3][3]}},
-               //  {{ grid[0][2], grid[1][2], grid[2][2], grid[3][2]}},
-               //  {{ grid[0][1], grid[1][1], grid[2][1], grid[3][1]}},
-               //  {{ grid[0][0], grid[1][0], grid[2][0], grid[3][0]}} }}
-    0;
+        return 0;
     if(dir == Dir::Down)
-        return // {{{{grid[3][3], grid[3][2], grid[3][1], grid[3][0]}},
-               //  {{ grid[2][3], grid[2][2], grid[2][1], grid[2][0]}},
-               //  {{ grid[1][3], grid[1][2], grid[1][1], grid[1][0]}},
-               //  {{ grid[0][3], grid[0][2], grid[0][1], grid[0][0]}} }}
-    0;
+        return 0;
     if(dir == Dir::Left)
-        return // {{{{grid[3][0], grid[2][0], grid[1][0], grid[0][0]}},
-               //  {{ grid[3][1], grid[2][1], grid[1][1], grid[0][1]}},
-               //  {{ grid[3][2], grid[2][2], grid[1][2], grid[0][2]}},
-               //  {{ grid[3][3], grid[2][3], grid[1][3], grid[0][3]}} }}
-    0;
+        return 0;
     return 0; // never come
 }
 
@@ -277,48 +265,12 @@ Board::Grid Board::gridMirror(Board::Grid grid){
         ((grid & dhlp) << 12);
 }
 
-
-// int Board::moveUpImp(int tmp){
-//     bool joined = false;
-//     bool hit = false;
-//     for(int i(0); i < 4;++i){
-//         joined = false;
-//         if((tmp >> (i * 4) & 0b1111) == 0) continue;
-//         hit = false;
-//         for(int j(i-1); j >= 0;--j){
-//             if((tmp >> (j * 4) & 0b1111) == 0) continue;
-//             if((tmp >> (j * 4) & 0b1111) == (tmp >> (i * 4) & 0b1111) && !joined){
-//                 //tmp[j] *= 2;
-//                 tmp += 1 << (j * 4);
-//                 tmp |= ~(0b1111 << i);
-//                 joined = true;
-//             }else{
-//                 if(j + 1 != i){
-//                     // tmp[j+1] = tmp >> (i * 4) & 0b1111;
-//                     tmp |= (tmp & ((~0b1111) << (j + 1) * 4 )) | (tmp >> (i * 4) & 0b1111) << (j + 1) * 4;
-//                     tmp |= ~(0b1111 << i);
-//                 }
-//                 joined = false;
-//             }
-//             hit = true;
-//             break;
-//         }
-//         if(i != 0 && ! hit){
-//             // tmp[0] = tmp >> (i * 4) & 0b1111;
-//             tmp |= (tmp & (~0b1111)) | (tmp >> (i * 4) & 0b1111);
-//             tmp |= ~(0b1111 << i);
-//             joined = false;
-//         }
-//     }
-//     return tmp;
-// }
-
 Board::Grid Board::moveLeft(Board::Grid grid){
     for(int k(0); k < 4;++k){
         bool joined = false;
         bool hit = false;
         for(int i(0); i < 4;++i){
-            joined = false;
+            // joined = false;
             if(get(grid, k, i) == 0) continue;
             hit = false;
             for(int j(i-1); j >= 0;--j){
@@ -340,15 +292,16 @@ Board::Grid Board::moveLeft(Board::Grid grid){
             if(i != 0 && ! hit){
                 grid = set(grid, k, 0, get(grid, k, i));
                 grid = set(grid, k, i, 0);
-                joined = false;
+                // joined = false;
             }
         }
     }
     return grid;
 }
 Board::Grid Board::moved(Board::Grid grid, Dir dir){
-    // if(dir != Dir::Up) return rotate((moveUp (rotate(grid, mirror(dir)))), dir);
-
+    if(dir == Dir::Up) return transpose(moveLeft(transpose(grid)));
+    if(dir == Dir::Down) return transpose(gridMirror(moveLeft(gridMirror(transpose(grid)))));
+    if(dir == Dir::Right) return gridMirror(moveLeft(gridMirror(grid)));
     return moveLeft(grid);
 }
 
