@@ -181,8 +181,8 @@ Board::Grid Board::set(Board::Grid const grid, int i, int j, int v){
 // }
 
 Dir Board::decideDir() {
-    static int cnt = 0;
-    return allDirs[cnt++%4];
+    // static int cnt = 0;
+    // return allDirs[cnt++%4];
     Kihime kihime(grid);
     Koyone koyone(grid);
     return koyone.decideDir();
@@ -352,18 +352,20 @@ Board::GridList_t<std::pair<Board::Grid, Dir>> Board::nextPossibleWorld(Board::G
 Board::GridList Board::nextPossibleWorldUp(Board::Grid grid){
     auto left = moveLeft(grid);
     if(left == grid) return {};
-    // int zeros(0);
-    // for(int i(0); i < 4; ++i)
-    //     for(int j(0); j < 4; ++j)
-    //         if(up[i][j] == 0) ++zeros;
-    // GridList tmps(zeros * 2, up);
-    // int cnt(0);
-    // for(int i(0); i < 4; ++i)
-    //     for(int j(0); j < 4; ++j)
-    //         if(up[j][i] == 0){
-    //             tmps[cnt][j][i] = 2;
-    //             tmps[cnt+1][j][i] = 4;
-    //         }
-    // return tmps;
+    int zeros(0);
+    for(int i(0); i < 4; ++i)
+        for(int j(0); j < 4; ++j)
+            if(get(left, i, j)) ++zeros;
+    GridList tmps(zeros * 2, left);
+    int cnt(0);
+    for(int i(0); i < 4; ++i)
+        for(int j(0); j < 4; ++j)
+            if(get(left, i, j) == 0){
+                // tmps[cnt][j][i] = 2;
+                // tmps[cnt+1][j][i] = 4;
+                tmps[cnt] = set(tmps[cnt], i, j, 1);
+                tmps[cnt+1] = set(tmps[cnt+1], i, j, 2);
+            }
+    return tmps;
 }
 
