@@ -156,7 +156,7 @@ int Board::get(Board::Grid grid, int i, int j){
 }
 Board::Grid Board::set(Board::Grid const grid, int i, int j, int v){
     int pos = i * 16 + j * 4;
-    return grid | v << pos; // あふれてるかも
+    return (grid & ~(0b1111 << pos)) | (v & 0b1111) << pos; // あふれてるかも
 }
 
 // int Board::toDead(std::pair<bool,Grid> const& grid) {
@@ -250,34 +250,37 @@ Board::Grid Board::rotate(Board::Grid grid, Dir dir){
 }
 
 int Board::moveUpImp(int tmp){
-    // bool joined = false;
-    // bool hit = false;
-    // for(int i(0); i < 4;++i){
-    //     joined = false;
-    //     if(tmp[i] == 0) continue;
-    //     hit = false;
-    //     for(int j(i-1); j >= 0;--j){
-    //         if(tmp[j] == 0) continue;
-    //         if(tmp[j] == tmp[i] && !joined){
-    //             tmp[j] *= 2;
-    //             tmp[i] = 0;
-    //             joined = true;
-    //         }else{
-    //             if(j + 1 != i){
-    //                 tmp[j+1] = tmp[i];
-    //                 tmp[i] = 0;
-    //             }
-    //             joined = false;
-    //         }
-    //         hit = true;
-    //         break;
-    //     }
-    //     if(i != 0 && ! hit){
-    //         tmp[0] = tmp[i];
-    //         tmp[i] = 0;
-    //         joined = false;
-    //     }
-    // }
+    bool joined = false;
+    bool hit = false;
+    for(int i(0); i < 4;++i){
+        joined = false;
+        if((tmp >> (i * 4) & 0b1111) == 0) continue;
+        hit = false;
+        for(int j(i-1); j >= 0;--j){
+            if((tmp >> (j * 4) & 0b1111) == 0) continue;
+            if((tmp >> (j * 4) & 0b1111) == (tmp >> (i * 4) & 0b1111) && !joined){
+                //tmp[j] *= 2;
+                tmp += 1 << (j * 4);
+                tmp |= ~(0b1111 << i);
+                joined = true;
+            }else{
+                if(j + 1 != i){
+                    // tmp[j+1] = tmp >> (i * 4) & 0b1111;
+                    tmp |= (tmp & ((~0b1111) << (j + 1) * 4 )) | (tmp >> (i * 4) & 0b1111) << (j + 1) * 4;
+                    tmp |= ~(0b1111 << i);
+                }
+                joined = false;
+            }
+            hit = true;
+            break;
+        }
+        if(i != 0 && ! hit){
+            // tmp[0] = tmp >> (i * 4) & 0b1111;
+            tmp |= (tmp & (~0b1111)) | (tmp >> (i * 4) & 0b1111);
+            tmp |= ~(0b1111 << i);
+            joined = false;
+        }
+    }
     return 0;
 }
 
