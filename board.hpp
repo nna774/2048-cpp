@@ -49,10 +49,6 @@ public:
     static bool alive(Grid);
     static int log2(int);
     static int pow2(int);
-    template<class T>
-    using GridList_t = std::vector<T>;
-    using GridList = GridList_t<Grid>;
-    static GridList_t<std::pair<Grid, Dir>> nextPossibleWorld(Grid);
 private:
     std::string const endpoint;
     int fd;
@@ -62,6 +58,5 @@ private:
 public:
     Grid grid;
     static int moveUpImp(int);
-    static GridList nextPossibleWorldUp(Grid);
 };
 

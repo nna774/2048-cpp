@@ -338,34 +338,4 @@ int Board::pow2(int i){
     return table[i];
 }
 
-Board::GridList_t<std::pair<Board::Grid, Dir>> Board::nextPossibleWorld(Board::Grid grid){
-    GridList_t<std::pair<Grid, Dir>> vec;
-    vec.reserve(128);
-    for(auto dir: allDirs){
-        GridList tmp = nextPossibleWorldUp(rotate(grid, dir));
-        for(auto const& e: tmp) vec.push_back(std::make_pair(rotate(e, mirror(dir)), dir));
-    }
-//    std::cout << "size: " << vec.size() << std::endl;
-    return vec;
-}
-
-Board::GridList Board::nextPossibleWorldUp(Board::Grid grid){
-    auto left = moveLeft(grid);
-    if(left == grid) return {};
-    int zeros(0);
-    for(int i(0); i < 4; ++i)
-        for(int j(0); j < 4; ++j)
-            if(get(left, i, j)) ++zeros;
-    GridList tmps(zeros * 2, left);
-    int cnt(0);
-    for(int i(0); i < 4; ++i)
-        for(int j(0); j < 4; ++j)
-            if(get(left, i, j) == 0){
-                // tmps[cnt][j][i] = 2;
-                // tmps[cnt+1][j][i] = 4;
-                tmps[cnt] = set(tmps[cnt], i, j, 1);
-                tmps[cnt+1] = set(tmps[cnt+1], i, j, 2);
-            }
-    return tmps;
-}
 
