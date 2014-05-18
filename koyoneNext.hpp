@@ -65,15 +65,15 @@ Dir KoyoneNext::decideDir() const{
             top = std::move(npw3);
             flg = false;
         }
-        for(auto const& e: npw4){
-            for(auto const& e2: nextPossibleWorld(e.first))
-                npw5.push_back(make_pair(e2.first, e.second));
-        }
-        if(flg && npw5.empty()){
-            top = std::move(npw4);
-            flg = false;
-        }
-        top = npw5;
+        // for(auto const& e: npw4){
+        //     for(auto const& e2: nextPossibleWorld(e.first))
+        //         npw5.push_back(make_pair(e2.first, e.second));
+        // }
+        // if(flg && npw5.empty()){
+        //     top = std::move(npw4);
+        //     flg = false;
+        // }
+        top = npw4;
     }
     return (std::max_element(std::begin(top), std::end(top), Koyone::CompStatic()))->second;
 }
@@ -94,7 +94,6 @@ Koyone::GridMap KoyoneNext::nextPossibleWorld(Board::Grid grid){
 Koyone::GridList KoyoneNext::nextPossibleWorldLeft(Board::Grid grid){
     auto left = Board::moveLeft(grid);
     if(left == grid) return {};
-    int zeros(0);
     for(int i(0); i < 4; ++i)
         for(int j(0); j < 4; ++j)
             if(Board::get(left, i, j) == 0)

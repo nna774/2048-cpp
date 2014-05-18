@@ -189,7 +189,7 @@ Dir Board::decideDir() {
     // static int cnt = 0;
     // return allDirs[cnt++%4];
     Kihime kihime(grid);
-    Koyone koyone(grid);
+    KoyoneNext koyone(grid);
     return koyone.decideDir();
     // int const MAX_ITERATION = 4000;
     // std::array<unsigned long,4> sums, counts, aves;
