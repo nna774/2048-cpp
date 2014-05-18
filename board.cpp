@@ -10,6 +10,7 @@
 #include "picojson/picojson.h"
 
 #include "koyone.hpp"
+#include "koyoneNext.hpp"
 #include "kihime.hpp"
 
 Board::Board(){

@@ -8,9 +8,8 @@ class Koyone{
 public:
     Koyone(Board::Grid grid) : grid(grid){ }
     Dir decideDir() const;
-private:
+
     using Grid = Board::Grid;
-    Grid grid;
     static int staticEval(Grid);
     static bool nurseryTime(Grid);
     static int const constexpr MATURED = 1024;
@@ -38,6 +37,8 @@ private:
     static GridMap nextPossibleWorld(Grid);
     static GridList nextPossibleWorldLeft(Grid);
     static void uniq(GridMap&);
+private:
+    Grid grid;
 };
 
 void Koyone::uniq(Koyone::GridMap& list) {
@@ -88,29 +89,38 @@ Dir Koyone::decideDir() const{
     std::cout << "size of 3: " << npw3.size() << std::endl;
     uniq(npw3);
     std::cout << "size of 3: " << npw3.size() << std::endl;
-    // npw4.reserve(1024 * 512);
-    // for(auto const& e: npw3){
-    //     for(auto const& e2: nextPossibleWorld(e.first))
-    //         npw4.push_back(make_pair(e2.first, e.second));
-    // }
-    // if(npw4.empty()) {
-    //     top = std::move(npw);
-    //     goto empty;
-    // }
-    // top = npw4;
-    // if(! nurseryTime(grid)) {
-    //     // std::cout << "before uniq of 4: " << npw4.size() << std::endl;
-    //     // std::sort(std::begin(npw4), std::end(npw4));
-    //     // auto newEnd = std::unique(std::begin(npw4), std::end(npw4), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
-    //     // npw4.erase(newEnd, std::end(npw4));
-    //     // std::cout << "after uniq of 4: " << npw4.size() << std::endl;
-    //     // npw5.reserve(1024 * 12);
-    //     for(auto const& e: npw4){
-    //         for(auto const& e2: nextPossibleWorld(e.first))
-    //             npw5.insert(make_pair(e2.first, e.second));
-    //     }
-    //     if(npw5.empty()) goto empty;
-    //     top = npw5;
+    if(! nurseryTime(grid)) {
+        npw4.reserve(1024 * 512);
+        for(auto const& e: npw3){
+            for(auto const& e2: nextPossibleWorld(e.first))
+                npw4.push_back(make_pair(e2.first, e.second));
+        }
+        if(npw4.empty()) {
+            top = std::move(npw);
+            goto empty;
+        }
+        top = npw4;
+        uniq(npw4);
+        for(auto const& e: npw4){
+            for(auto const& e2: nextPossibleWorld(e.first))
+                npw5.push_back(make_pair(e2.first, e.second));
+        }
+        if(npw5.empty()) goto empty;
+        top = npw5;
+        for(auto const& e: npw5){
+            for(auto const& e2: nextPossibleWorld(e.first))
+                npw6.push_back(make_pair(e2.first, e.second));
+        }
+        if(npw6.empty()) goto empty;
+        top = npw6;
+
+    }
+        // std::cout << "before uniq of 4: " << npw4.size() << std::endl;
+        // std::sort(std::begin(npw4), std::end(npw4));
+        // auto newEnd = std::unique(std::begin(npw4), std::end(npw4), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
+        // npw4.erase(newEnd, std::end(npw4));
+        // std::cout << "after uniq of 4: " << npw4.size() << std::endl;
+        // npw5.reserve(1024 * 12);
     //     // もう一回
     //     // std::cout << "before uniq of 5: " << npw5.size() << std::endl;
     //     // std::sort(std::begin(npw5), std::end(npw5));
