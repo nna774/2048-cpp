@@ -28,11 +28,22 @@ private:
             return a.first < b.first;
         }
     };
+    struct CompEqual{
+        bool operator()(std::pair<Grid, Dir> a, std::pair<Grid, Dir> b){
+            return a.first == b.first;
+        }
+    };
     using GridList = std::vector<Grid>;
-    using GridMap = std::set<std::pair<Grid, Dir>, CompGrid>;
+    using GridMap = std::vector<std::pair<Grid, Dir>>;
     static GridMap nextPossibleWorld(Grid);
     static GridList nextPossibleWorldLeft(Grid);
+    static void uniq(GridMap&);
 };
+
+void Koyone::uniq(Koyone::GridMap& list) {
+    auto newEnd = std::unique(std::begin(list), std::end(list), CompEqual());
+    list.erase(newEnd, std::end(list));
+}
 
 Dir Koyone::decideDir() const{
     using std::make_pair;
@@ -50,36 +61,43 @@ Dir Koyone::decideDir() const{
     //     Board::show(e.first);
     //     std::cout << "!!----------------!!" << std::endl;
     // }
-    // std::cout << "size of 1: " << npw.size() << std::endl;
-    // npw2.reserve(1024 * 8);
+    std::cout << "size of 1: " << npw.size() << std::endl;
+    uniq(npw);
+    npw2.reserve(1024 * 12);
     for(auto e: npw){
         for(auto e2: nextPossibleWorld(e.first))
-            npw2.insert(make_pair(e2.first, e.second));
+            npw2.push_back(make_pair(e2.first, e.second));
     }
     if(npw2.empty()) {
         top = std::move(npw);
         goto empty;
     }
-    // std::cout << "size of 2: " << npw2.size() << std::endl;
+    std::cout << "size of 2: " << npw2.size() << std::endl;
+    uniq(npw2);
+    std::cout << "size of 2: " << npw2.size() << std::endl;
     // npw3.reserve(1024 * 20);
     for(auto e: npw2){
         for(auto e2: nextPossibleWorld(e.first))
-            npw3.insert(make_pair(e2.first, e.second));
+            npw3.push_back(make_pair(e2.first, e.second));
     }
     if(npw3.empty()) {
         top = std::move(npw);
         goto empty;
     }
+    top = npw3;
+    std::cout << "size of 3: " << npw3.size() << std::endl;
+    uniq(npw3);
+    std::cout << "size of 3: " << npw3.size() << std::endl;
     // npw4.reserve(1024 * 512);
-    for(auto const& e: npw3){
-        for(auto const& e2: nextPossibleWorld(e.first))
-            npw4.insert(make_pair(e2.first, e.second));
-    }
-    if(npw4.empty()) {
-        top = std::move(npw);
-        goto empty;
-    }
-    top = npw4;
+    // for(auto const& e: npw3){
+    //     for(auto const& e2: nextPossibleWorld(e.first))
+    //         npw4.push_back(make_pair(e2.first, e.second));
+    // }
+    // if(npw4.empty()) {
+    //     top = std::move(npw);
+    //     goto empty;
+    // }
+    // top = npw4;
     // if(! nurseryTime(grid)) {
     //     // std::cout << "before uniq of 4: " << npw4.size() << std::endl;
     //     // std::sort(std::begin(npw4), std::end(npw4));
@@ -108,8 +126,7 @@ Dir Koyone::decideDir() const{
     //     top = npw6;
     // }
     empty: ;
-    auto max = *std::max_element(std::begin(top), std::end(top), CompStatic());
-    return max.second;
+    return (std::max_element(std::begin(top), std::end(top), CompStatic()))->second;
 }
 
 int Koyone::staticEval(Board::Grid grid){
@@ -134,13 +151,13 @@ bool Koyone::nurseryTime(Board::Grid grid){
 Koyone::GridMap Koyone::nextPossibleWorld(Board::Grid grid){
     GridMap map;
     GridList lefts = nextPossibleWorldLeft(grid);
-    for(auto e: lefts) map.insert(std::make_pair(e, Dir::Left));
+    for(auto e: lefts) map.push_back(std::make_pair(e, Dir::Left));
     GridList right = nextPossibleWorldLeft(Board::gridMirror(grid));
-    for(auto e: right) map.insert(std::make_pair(Board::gridMirror(e), Dir::Right));
+    for(auto e: right) map.push_back(std::make_pair(Board::gridMirror(e), Dir::Right));
     GridList down = nextPossibleWorldLeft(Board::gridMirror(Board::transpose(grid)));
-    for(auto e: down) map.insert(std::make_pair(Board::transpose(Board::gridMirror(e)), Dir::Down));
+    for(auto e: down) map.push_back(std::make_pair(Board::transpose(Board::gridMirror(e)), Dir::Down));
     GridList up = nextPossibleWorldLeft(Board::transpose(grid));
-    for(auto e: up) map.insert(std::make_pair(Board::transpose(e), Dir::Up));
+    for(auto e: up) map.push_back(std::make_pair(Board::transpose(e), Dir::Up));
 //    vec.reserve(128);
     // for(auto dir: allDirs){
     //     GridList tmp = nextPossibleWorldLeft(Board::rotate(Board::rotate(grid, dir), Dir::Right));
