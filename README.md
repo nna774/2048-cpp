@@ -5,7 +5,7 @@
 
 2048 を解くAI です
 
-koyone という名前です。かわいがってください。
+Koyone とKihime の二人ががんばって良い手を探してくれます。
 
 # License
 GPLv3
