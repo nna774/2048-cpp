@@ -113,7 +113,7 @@ bool Board::move(Dir dir){
     is03 >> v;
 
     grid = UINT64_C(0);
-    // std::cout << v << std::endl;
+    std::cout << v << std::endl;
     auto g = v.get("grid");
     picojson::array arr = g.get<picojson::array>();
     for(int i(0); i < 4; ++i){
@@ -159,31 +159,6 @@ Board::Grid Board::set(Board::Grid const grid, int i, int j, int v){
     return (grid & ~(UINT64_C(0b1111) << pos)) | ((v & (UINT64_C(0b1111))) << pos); // あふれてるかも
 }
 
-// int Board::toDead(std::pair<bool,Grid> const& grid) {
-//     std::pair<bool,Grid> movedGrid = grid;
-//     while(alive(movedGrid.second)){ // 死ぬまで
-//         auto oldGrid = movedGrid;
-//         int flg(0);
-//         int toI = rand4(mt);
-//         flg = 1 << (toI+1);
-//         auto to = allDirs[toI];
-//         movedGrid = movedAndBirth(oldGrid.second, to);
-//         if(movedGrid.first == false){
-//             while(flg != (1 << 4) + (1 << 3) + (1 << 2) + (1 << 1)){
-//                 int tmp = rand4(mt);
-//                 if(1 << tmp & flg) continue; // 既に見た
-//                 // あった
-//                 movedGrid = movedAndBirth(oldGrid.second, allDirs[tmp]);
-//                 flg = 1 << (tmp+1);
-//                 if(movedGrid.first) goto label; // goto!!
-//             }
-//             movedGrid = oldGrid;
-//             break; // 全部ダメだった
-//         }
-//     label: ;
-//     }
-//     return staticEval(movedGrid.second);
-// }
 
 Dir Board::decideDir() {
     // static int cnt = 0;
@@ -191,42 +166,6 @@ Dir Board::decideDir() {
     Kihime kihime(grid);
     KoyoneNext koyone(grid);
     return koyone.decideDir();
-    // int const MAX_ITERATION = 4000;
-    // std::array<unsigned long,4> sums, counts, aves;
-    // sums.fill(0);
-    // counts.fill(0);
-    // aves.fill(0);
-    // for(int i(0); i < MAX_ITERATION; ++i){
-    //     int dirI = rand4(mt);
-    //     // std::cout << dirI;
-    //     Dir dir = allDirs[dirI];
-    //     auto movedGrid = movedAndBirth(grid, dir);
-    //     // std::cout << "a";
-    //     sums[dirToInt(dir)] += toDead(movedGrid);
-    //     ++counts[dirToInt(dir)];
-    // }
-    // for(int i(0); i < 4; ++i) aves[i] = sums[i]/counts[i];
-    // Dir maxDir = Dir::Down;
-    // int maxAve = 0;
-    // for(int i(0); i < 4; ++i){
-    //     // std::cout << aves[i] << std::endl;
-    //     if(aves[i] > maxAve){
-    //         maxDir = allDirs[i];
-    //         maxAve = aves[i];
-    //     }
-    // }
-    // // std::cout << dirToInt(maxDir);
-    // auto m = moved(grid, maxDir);
-    // for(int i(0); i < 4; ++i)
-    //     for(int j(0); j < 4; ++j)
-    //         if(m[i][j] != grid[i][j]) {
-    //             // std::cout << "!!!!!" << std::endl;
-    //             // std::cout << i << ',' << j << ',' << m[i][j] << ',' << grid[i][j];
-    //             return maxDir;
-    //         }
-    // // std::cout << "xxxxx";
-    // return allDirs[rand4(mt)]; // つらい
-    // return maxDir;
 }
 
 Board::Grid Board::rotate(Board::Grid grid, Dir dir){
@@ -274,28 +213,6 @@ bool Board::movable(Board::Grid grid, Dir dir){
     return moved(grid, dir) != grid;
 }
 
-// std::pair<bool,Board::Grid> Board::movedAndBirth(Board::Grid const& grid, Dir dir) { // 動けばfirst はtrue
-//     std::random_device rnd;
-//     std::vector< std::uint_least32_t> v(10);
-//     std::generate(begin(v), end(v), ref(rnd));
-//     std::mt19937 mt(std::seed_seq(begin(v), end(v)));
-    
-//     auto m = moved(grid, dir);
-//     if(m == grid) return std::make_pair(false, m);
-//     int birth = "2222222224"[rand10(mt)] - '0';
-//     int zeros(0);
-//     for(int i(0); i < 4; ++i)
-//         for(int j(0); j < 4; ++j)
-//             if(m[i][j] == 0) ++zeros;
-//     std::uniform_int_distribution<int> dice(0,zeros-1);
-//     int pos = dice(mt);
-//     for(int i(0); i < 4; ++i)
-//         for(int j(0); j < 4; ++j)
-//             if(m[i][j] == 0)
-//                 if(pos-- == 0) m[i][j] = birth;
-//     return std::make_pair(true, m);
-// }
-
 bool Board::alive(Board::Grid grid) {
     for(int i(0); i < 4;++i) if(movable(grid, allDirs[i])) return true;
     return false;
@@ -342,5 +259,4 @@ int Board::pow2(int i){
     static int const constexpr table[] = {0,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384};
     return table[i];
 }
-
 
