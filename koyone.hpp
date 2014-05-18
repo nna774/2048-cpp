@@ -15,6 +15,7 @@ private:
     static int staticEval(Grid);
     static bool nurseryTime(Grid);
     static int const constexpr MATURED = 1024;
+    static int const constexpr SPACE_WEIGHT = 500;
     struct CompStatic{
         bool operator()(std::pair<Grid, Dir> a, std::pair<Grid, Dir> b){
             return staticEval(a.first) < staticEval(b.first);
@@ -130,7 +131,6 @@ Dir Koyone::decideDir() const{
 }
 
 int Koyone::staticEval(Board::Grid grid){
-    int const constexpr SPACE_WEIGHT = 500;
     int sum(0);
     for(int i(0); i < 4; ++i)
         for(int j(0); j < 4; ++j)
@@ -141,7 +141,6 @@ int Koyone::staticEval(Board::Grid grid){
 }
 
 bool Koyone::nurseryTime(Board::Grid grid){
-    int const constexpr MATURED = 1024;
     for(int i(0); i < 4;++i)
         for(int j(0); j < 4;++j)
             if(Board::get(grid, i, j) >= MATURED) return false;
