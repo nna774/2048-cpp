@@ -135,6 +135,10 @@ bool Board::move(Dir dir){
 }
 
 void Board::show() const {
+    show(grid);
+}
+
+void Board::show(Board::Grid const grid){
     std::cout << "+----+----+----+----+\n";
     for(int i(0); i < 4; ++i)
         std::cout << '|' << std::setfill(' ') << std::setw(4) << std::right << pow2(get(grid, i, 0))

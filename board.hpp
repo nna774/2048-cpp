@@ -33,9 +33,10 @@ public:
     Board();
     Board(std::string const protocol, std::string const endpoint, std::string const port);
     bool move(Dir dir); // return value is moved
-    void show() const;
     Dir decideDir();
     using Grid = uint64_t;
+    void show() const;
+    static void show(Grid);
     static int get(Grid, int i, int j); // grid[i][j]
     static Grid set(Grid const, int i, int j, int v);
     // static Grid& set(Grid&, int i, int j, int v);
