@@ -12,7 +12,7 @@ public:
     using Grid = Board::Grid;
     static int staticEval(Grid);
     static bool nurseryTime(Grid);
-    static int const constexpr MATURED = 1024;
+    static int const constexpr MATURED = 10;
     static int const constexpr SPACE_WEIGHT = 500;
     struct CompStatic{
         bool operator()(std::pair<Grid, Dir> a, std::pair<Grid, Dir> b){
@@ -48,11 +48,6 @@ void Koyone::uniq(Koyone::GridMap& list) {
 
 Dir Koyone::decideDir() const{
     using std::make_pair;
-    // std::mt19937 mt;
-    // std::uniform_int_distribution<int> rand4(0,3);
-    // std::uniform_int_distribution<int> rand10(0,9);
-    // static int cnt(0);
-    // return allDirs[cnt++%4];
     auto npw = nextPossibleWorld(grid);
     auto top = npw;
     decltype(npw) npw2, npw3, npw4, npw5, npw6;
@@ -144,7 +139,7 @@ int Koyone::staticEval(Board::Grid grid){
     for(int i(0); i < 4; ++i)
         for(int j(0); j < 4; ++j)
             sum += Board::get(grid, i, j)
-                ? Board::get(grid, i, j) * log2(Board::get(grid, i, j))
+                ? Board::pow2(Board::get(grid, i, j)) * Board::get(grid, i, j)
                 : SPACE_WEIGHT;
     return sum;
 }
