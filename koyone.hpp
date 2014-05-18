@@ -1,7 +1,7 @@
 #pragma once
 
 #include <random>
-#include <map>
+#include <set>
 
 #include "board.hpp"
 
@@ -15,7 +15,7 @@ private:
     static int staticEval(Grid);
     static bool nurseryTime(Grid);
     static int const constexpr MATURED = 1024;
-    struct Comp{
+    struct CompStatic{
         bool operator()(std::pair<Grid, Dir> a, std::pair<Grid, Dir> b){
             return staticEval(a.first) < staticEval(b.first);
         }
@@ -23,26 +23,37 @@ private:
             return staticEval(a) < staticEval(b);
         }
     };
+    struct CompGrid{
+        bool operator()(std::pair<Grid, Dir> a, std::pair<Grid, Dir> b){
+            return a.first < b.first;
+        }
+    };
     using GridList = std::vector<Grid>;
-    using GridMap = std::map<Grid, Dir>;
+    using GridMap = std::set<std::pair<Grid, Dir>, CompGrid>;
     static GridMap nextPossibleWorld(Grid);
-    static GridList nextPossibleWorldUp(Grid);
+    static GridList nextPossibleWorldLeft(Grid);
 };
 
 Dir Koyone::decideDir() const{
     using std::make_pair;
-    std::mt19937 mt;
-    std::uniform_int_distribution<int> rand4(0,3);
-    std::uniform_int_distribution<int> rand10(0,9);
-
-    // int const constexpr MIN_LENGTH = 100;
+    // std::mt19937 mt;
+    // std::uniform_int_distribution<int> rand4(0,3);
+    // std::uniform_int_distribution<int> rand10(0,9);
+    // static int cnt(0);
+    // return allDirs[cnt++%4];
     auto npw = nextPossibleWorld(grid);
     auto top = npw;
     decltype(npw) npw2, npw3, npw4, npw5, npw6;
+    // if(npw.empty()) std::cout << "!!!!!!!!!!!!!!!!" << std::endl;
+    // for(auto e: npw) {
+    //     std::cout << "!!----------------!!" << std::endl;
+    //     Board::show(e.first);
+    //     std::cout << "!!----------------!!" << std::endl;
+    // }
     // std::cout << "size of 1: " << npw.size() << std::endl;
     // npw2.reserve(1024 * 8);
-    for(auto const& e: npw){
-        for(auto const& e2: nextPossibleWorld(e.first))
+    for(auto e: npw){
+        for(auto e2: nextPossibleWorld(e.first))
             npw2.insert(make_pair(e2.first, e.second));
     }
     if(npw2.empty()) {
@@ -51,21 +62,14 @@ Dir Koyone::decideDir() const{
     }
     // std::cout << "size of 2: " << npw2.size() << std::endl;
     // npw3.reserve(1024 * 20);
-    for(auto const& e: npw2){
-        for(auto const& e2: nextPossibleWorld(e.first))
+    for(auto e: npw2){
+        for(auto e2: nextPossibleWorld(e.first))
             npw3.insert(make_pair(e2.first, e.second));
     }
     if(npw3.empty()) {
         top = std::move(npw);
         goto empty;
     }
-    // std::cout << "before uniq of 3: " << npw3.size() << std::endl;
-    // std::sort(std::begin(npw3), std::end(npw3));
-    
-    // npw3.erase(std::unique(std::begin(npw3), std::end(npw3), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; })
-    //            , std::end(npw3));
-    // std::cout << "after uniq of 3: " << npw3.size() << std::endl;
-
     // npw4.reserve(1024 * 512);
     for(auto const& e: npw3){
         for(auto const& e2: nextPossibleWorld(e.first))
@@ -76,37 +80,35 @@ Dir Koyone::decideDir() const{
         goto empty;
     }
     top = npw4;
-    if(! nurseryTime(grid)) {
-        // std::cout << "before uniq of 4: " << npw4.size() << std::endl;
-        // std::sort(std::begin(npw4), std::end(npw4));
-        // auto newEnd = std::unique(std::begin(npw4), std::end(npw4), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
-        // npw4.erase(newEnd, std::end(npw4));
-        // std::cout << "after uniq of 4: " << npw4.size() << std::endl;
-        // npw5.reserve(1024 * 12);
-        for(auto const& e: npw4){
-            for(auto const& e2: nextPossibleWorld(e.first))
-                npw5.insert(make_pair(e2.first, e.second));
-        }
-        if(npw5.empty()) goto empty;
-        top = npw5;
-        // もう一回
-        // std::cout << "before uniq of 5: " << npw5.size() << std::endl;
-        // std::sort(std::begin(npw5), std::end(npw5));
-        // newEnd = std::unique(std::begin(npw5), std::end(npw5), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
-        // npw5.erase(newEnd, std::end(npw5));
-        // std::cout << "after uniq of 5: " << npw5.size() << std::endl;
-        // npw6.reserve(1024 * 120);
-        for(auto const& e: npw5){
-            for(auto const& e2: nextPossibleWorld(e.first))
-                npw6.insert(make_pair(e2.first, e.second));
-        }
-        if(npw6.empty()) goto empty;
-        top = npw6;
-    }
+    // if(! nurseryTime(grid)) {
+    //     // std::cout << "before uniq of 4: " << npw4.size() << std::endl;
+    //     // std::sort(std::begin(npw4), std::end(npw4));
+    //     // auto newEnd = std::unique(std::begin(npw4), std::end(npw4), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
+    //     // npw4.erase(newEnd, std::end(npw4));
+    //     // std::cout << "after uniq of 4: " << npw4.size() << std::endl;
+    //     // npw5.reserve(1024 * 12);
+    //     for(auto const& e: npw4){
+    //         for(auto const& e2: nextPossibleWorld(e.first))
+    //             npw5.insert(make_pair(e2.first, e.second));
+    //     }
+    //     if(npw5.empty()) goto empty;
+    //     top = npw5;
+    //     // もう一回
+    //     // std::cout << "before uniq of 5: " << npw5.size() << std::endl;
+    //     // std::sort(std::begin(npw5), std::end(npw5));
+    //     // newEnd = std::unique(std::begin(npw5), std::end(npw5), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
+    //     // npw5.erase(newEnd, std::end(npw5));
+    //     // std::cout << "after uniq of 5: " << npw5.size() << std::endl;
+    //     // npw6.reserve(1024 * 120);
+    //     for(auto const& e: npw5){
+    //         for(auto const& e2: nextPossibleWorld(e.first))
+    //             npw6.insert(make_pair(e2.first, e.second));
+    //     }
+    //     if(npw6.empty()) goto empty;
+    //     top = npw6;
+    // }
     empty: ;
-    // for(auto const& e:npw3) std::cout << staticEval(e.first) << ", " << dirToInt(e.second) << std::endl;
-    auto max = *std::max_element(std::begin(top), std::end(top), Comp());
-    // std::cout << "Max: " << staticEval(max.first) << ", " << dirToInt(max.second) << std::endl;
+    auto max = *std::max_element(std::begin(top), std::end(top), CompStatic());
     return max.second;
 }
 
@@ -131,31 +133,38 @@ bool Koyone::nurseryTime(Board::Grid grid){
 
 Koyone::GridMap Koyone::nextPossibleWorld(Board::Grid grid){
     GridMap map;
+    GridList lefts = nextPossibleWorldLeft(grid);
+    for(auto e: lefts) map.insert(std::make_pair(e, Dir::Left));
+    GridList right = nextPossibleWorldLeft(Board::gridMirror(grid));
+    for(auto e: right) map.insert(std::make_pair(Board::gridMirror(e), Dir::Right));
+    GridList down = nextPossibleWorldLeft(Board::gridMirror(Board::transpose(grid)));
+    for(auto e: down) map.insert(std::make_pair(Board::transpose(Board::gridMirror(e)), Dir::Down));
+    GridList up = nextPossibleWorldLeft(Board::transpose(grid));
+    for(auto e: up) map.insert(std::make_pair(Board::transpose(e), Dir::Up));
 //    vec.reserve(128);
-    for(auto dir: allDirs){
-        GridList tmp = nextPossibleWorldUp(Board::rotate(grid, dir));
-        for(auto const& e: tmp) map.insert(std::make_pair(Board::rotate(e, mirror(dir)), dir));
-    }
+    // for(auto dir: allDirs){
+    //     GridList tmp = nextPossibleWorldLeft(Board::rotate(Board::rotate(grid, dir), Dir::Right));
+    //     for(auto e: tmp) map.insert(std::make_pair(Board::rotate(Board::rotate(e, Dir::Left), mirror(dir)), dir));
+    // }
 //    std::cout << "size: " << vec.size() << std::endl;
     return map;
 }
 
-Koyone::GridList Koyone::nextPossibleWorldUp(Board::Grid grid){
+Koyone::GridList Koyone::nextPossibleWorldLeft(Board::Grid grid){
     auto left = Board::moveLeft(grid);
     if(left == grid) return {};
     int zeros(0);
     for(int i(0); i < 4; ++i)
         for(int j(0); j < 4; ++j)
-            if(Board::get(left, i, j)) ++zeros;
+            if(Board::get(left, i, j) == 0) ++zeros;
     GridList tmps(zeros * 2, left);
     int cnt(0);
     for(int i(0); i < 4; ++i)
         for(int j(0); j < 4; ++j)
             if(Board::get(left, i, j) == 0){
-                // tmps[cnt][j][i] = 2;
-                // tmps[cnt+1][j][i] = 4;
-                tmps[cnt]   = Board::set(tmps[cnt], i, j, 1);
-                tmps[cnt+1] = Board::set(tmps[cnt+1], i, j, 2);
+                tmps[cnt]   = Board::set(left, i, j, 1);
+                tmps[cnt+1] = Board::set(left, i, j, 2);
+                cnt +=2;
             }
     return tmps;
 }
