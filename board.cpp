@@ -169,14 +169,17 @@ Dir Board::decideDir() {
 }
 
 Board::Grid Board::rotate(Board::Grid grid, Dir dir){
-    if(dir == Dir::Up) return grid;
-    if(dir == Dir::Right)
+    switch(dir){
+    case Dir::Up:
+        return grid;
+    case Dir::Down:
         return 0;
-    if(dir == Dir::Down)
+    case Dir::Right:
         return 0;
-    if(dir == Dir::Left)
+    case Dir::Left:
+    default :
         return 0;
-    return 0; // never come
+    }
 }
 
 Board::Grid Board::transpose(Board::Grid grid){
