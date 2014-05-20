@@ -198,12 +198,12 @@ Board::Grid Board::transpose(Board::Grid grid){
 Board::Grid Board::gridMirror(Board::Grid grid){
     uint64_t
         aeim = UINT64_C(0xF000F000F000F000),
-        bfin = UINT64_C(0x0F000F000F000F00),
+        bfjn = UINT64_C(0x0F000F000F000F00),
         cgko = UINT64_C(0x00F000F000F000F0),
         dhlp = UINT64_C(0x000F000F000F000F);
     return
         ((grid & aeim) >> 12)|
-        ((grid & bfin) >> 4) |
+        ((grid & bfjn) >> 4) |
         ((grid & cgko) << 4) |
         ((grid & dhlp) << 12);
 }
