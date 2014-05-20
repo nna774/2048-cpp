@@ -17,7 +17,7 @@ kihime.o: kihime.cpp kihime.hpp
 nona7.o: nona7.cpp nona7.hpp
 
 clean:
-	rm -f *.o
+	rm -f *.o a.out
 
 test:
 	echo do nothing
