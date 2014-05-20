@@ -49,7 +49,7 @@ Board::Board(std::string const, std::string const endpoint, std::string const po
     freeaddrinfo(result);
     fd = sfd;
     
-    std::string req = "GET /hi/start/json HTTP/1.1\nHost: " + endpoint + "\n\n";
+    std::string req = "GET /hi/start/json HTTP/1.1\nHost: " + endpoint + "\n\n"; //// #### TODO: 共通部分の関数化 ####
     write(sfd, req.c_str(), req.size());
     char buf[512];
     read(sfd, buf, 255);

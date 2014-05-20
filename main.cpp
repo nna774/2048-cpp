@@ -3,7 +3,7 @@
 
 
 static std::string const protocol = "http";
-static std::string const endpoint = "ring";
+static std::string const endpoint = "ring"; // #### TODO: 適当にargv 読むようにする ####
 static std::string const port = "2048";
 
 int main(int, char**){
@@ -38,9 +38,6 @@ int main(int, char**){
     }
     catch (std::string v){
         std::cerr << v << std::endl;
-        b.show();
-        auto tmp = b.grid;
-        b.grid = Board::gridMirror(tmp);
         b.show();
     }
 }
