@@ -51,7 +51,7 @@ Dir Nona7::decideDir() const{
     using std::make_pair;
     auto npw = nextPossibleWorld(grid);
     auto top = npw;
-    decltype(npw) npw2, npw3, npw4, npw5, npw6;
+    decltype(npw) npw2, npw3, npw4, npw5, npw6, npw7, npw8;
     // if(npw.empty()) std::cout << "!!!!!!!!!!!!!!!!" << std::endl;
     // for(auto e: npw) {
     //     std::cout << "!!----------------!!" << std::endl;
@@ -109,7 +109,18 @@ Dir Nona7::decideDir() const{
         }
         if(npw6.empty()) goto empty;
         top = npw6;
-
+        for(auto const& e: npw6){
+            for(auto const& e2: nextPossibleWorld(e.first))
+                npw7.push_back(make_pair(e2.first, e.second));
+        }
+        if(npw7.empty()) goto empty;
+        top = npw7;
+        for(auto const& e: npw7){
+            for(auto const& e2: nextPossibleWorld(e.first))
+                npw8.push_back(make_pair(e2.first, e.second));
+        }
+        if(npw8.empty()) goto empty;
+        top = npw8;
     }
     empty: ;
     return (std::max_element(std::begin(top), std::end(top), CompStatic()))->second;
