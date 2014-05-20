@@ -12,6 +12,7 @@
 #include "koyone.hpp"
 #include "koyoneNext.hpp"
 #include "kihime.hpp"
+#include "nona7.hpp"
 
 Board::Board(){
     Board("http", "2048.semantics3.com", "80");
@@ -163,9 +164,8 @@ Board::Grid Board::set(Board::Grid const grid, int i, int j, int v){
 Dir Board::decideDir() {
     // static int cnt = 0;
     // return allDirs[cnt++%4];
-    Kihime kihime(grid);
-    KoyoneNext koyone(grid);
-    return koyone.decideDir();
+    Nona7 nona7(grid);
+    return nona7.decideDir();
 }
 
 Board::Grid Board::rotate(Board::Grid grid, Dir dir){
