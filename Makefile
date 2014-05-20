@@ -1,10 +1,11 @@
 CXX = g++
+O = -O3
 
 all: main.o board.o boardTable.o koyone.o koyoneNext.o kihime.o nona7.o
 	$(CXX) main.o board.o boardTable.o koyone.o koyoneNext.o kihime.o nona7.o
 
 .cpp.o:
-	$(CXX) --std=c++11 -Wall -Wextra -O3 -c $<
+	$(CXX) $(O) --std=c++11 -Wall -Wextra -c $<
 
 main.o: board.hpp
 board.o: board.cpp board.hpp koyone.hpp koyoneNext.hpp kihime.hpp nona7.hpp
