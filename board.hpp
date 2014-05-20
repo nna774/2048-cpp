@@ -33,7 +33,8 @@ public:
     Board();
     Board(std::string const protocol, std::string const endpoint, std::string const port);
     bool move(Dir dir); // return value is moved
-    Dir decideDir();
+    // Dir decideDir();
+    template<class T> Dir decideDir();
     using Grid = uint64_t;
     void show() const;
     static void show(Grid);

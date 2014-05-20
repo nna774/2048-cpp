@@ -160,12 +160,15 @@ Board::Grid Board::set(Board::Grid const grid, int i, int j, int v){
     return (grid & ~(UINT64_C(0b1111) << pos)) | ((v & (UINT64_C(0b1111))) << pos); // あふれてるかも
 }
 
+// Dir Board::decideDir() {
+//     Kihime kihime(grid);
+//     return kihime.decideDir();
+// }
 
+template<class T>
 Dir Board::decideDir() {
-    // static int cnt = 0;
-    // return allDirs[cnt++%4];
-    Nona7 nona7(grid);
-    return nona7.decideDir();
+    T oracle(grid);
+    return oracle.decideDir();
 }
 
 Board::Grid Board::rotate(Board::Grid grid, Dir dir){
@@ -262,4 +265,9 @@ int Board::pow2(int i){
     static int const constexpr table[] = {0,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384};
     return table[i];
 }
+
+template Dir Board::decideDir<Kihime>();
+template Dir Board::decideDir<Koyone>();
+template Dir Board::decideDir<KoyoneNext>();
+template Dir Board::decideDir<Nona7>();
 
