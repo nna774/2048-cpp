@@ -220,7 +220,9 @@ bool Board::movable(Board::Grid grid, Dir dir){
 }
 
 bool Board::alive(Board::Grid grid) {
-    for(int i(0); i < 4;++i) if(movable(grid, allDirs[i])) return true;
+    for(int i(0); i < 4; ++i)
+        if(movable(grid, allDirs[i]))
+            return true;
     return false;
 }
 
