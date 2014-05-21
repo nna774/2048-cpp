@@ -17,16 +17,42 @@ Dir Kihime::decideDir(){
     depths.fill(0);
     aves.fill(0);
 
+    for(int i(0); i < ITERATION; ++i){
+        Dir dir = allDirs[mt()%4];
+        auto moved = Board::moved(grid, dir);
+        int depth = toDead(moved, 0);
+        depths[dirToInt(dir)] += depth;
+        ++cnt[dirToInt(dir)];
+    }
     return allDirs[mt()%4];
 }
 
 int Kihime::toDead(Board::Grid grid, int depth) {
     if(Board::alive(grid)){
         auto dir = allDirs[mt()%4];
-        auto moved = Board::moved(grid, dir);
+        auto moved = moveAndBirth(grid, dir);
         return toDead(moved, depth + 1);
     }
     return depth;
+}
+
+Board::Grid Kihime::moveAndBirth(Board::Grid grid, Dir dir){
+    auto moved = Board::moved(grid, dir);
+    int zeros(0);
+    for(int i(0); i < 4; ++i)
+        for(int j(0); j < 4; ++j)
+            if(Board::get(moved, i, j) == 0) ++zeros;
+    if(zeros > 0){
+        int point = mt() % zeros;
+        int birth = "1111111112"[mt() % 10] - '0'; // 10% で4、 のこりが2
+        for(int i(0); i < 4; ++i)
+            for(int j(0); j < 4; ++j)
+                if(Board::get(moved, i, j) == 0)
+                    if(point-- == 0) moved = Board::set(moved, i, j, birth);
+    }else{
+        // 動けなかった時だけだと思う
+    }
+    return moved;
 }
 
     // int const MAX_ITERATION = 4000;
