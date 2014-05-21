@@ -12,9 +12,10 @@ std::mt19937 Kihime::mtInit(){
 }
 
 Dir Kihime::decideDir(){
-    std::array<int, 4> cnt, depths, aves;
+    std::array<int, 4> cnt, depths;
     cnt.fill(0);
     depths.fill(0);
+    std::array<double, 4> aves;
     aves.fill(0);
 
     for(int i(0); i < ITERATION; ++i){
@@ -24,7 +25,18 @@ Dir Kihime::decideDir(){
         depths[dirToInt(dir)] += depth;
         ++cnt[dirToInt(dir)];
     }
-    return allDirs[mt()%4];
+    for(int i(0); i < 4; ++i){
+        aves[i] = depths[i] / (cnt[i] * 1.0);
+    }
+    Dir max = Dir::Up;
+    double maxAve = 0.0;
+    for(int i(0); i < 4; ++i){
+        if(aves[i] > maxAve){
+            max = allDirs[i];
+            maxAve = aves[i];
+        }
+    }
+    return max;
 }
 
 int Kihime::toDead(Board::Grid grid, int depth) {
