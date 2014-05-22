@@ -20,12 +20,17 @@ Dir Kihime::decideDir(){
 
     for(int i(0); i < ITERATION; ++i){
         Dir dir = allDirs[mt()%4];
+        while(! Board::movable(grid, dir)) dir = allDirs[mt()%4];
         auto moved = Board::moved(grid, dir);
         int depth = toDead(moved, 0);
         depths[dirToInt(dir)] += depth;
         ++cnt[dirToInt(dir)];
     }
     for(int i(0); i < 4; ++i){
+        if(cnt[i] == 0){
+            aves[i] = 0;
+            continue;
+        }
         aves[i] = depths[i] / (cnt[i] * 1.0);
     }
     Dir max = Dir::Up;
