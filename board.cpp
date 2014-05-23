@@ -151,15 +151,6 @@ void Board::show(Board::Grid const grid){
     std::cout << "+----+----+----+----+" << std::endl;
 }
 
-int Board::get(Board::Grid grid, int i, int j){
-    int pos = i * 16 + j * 4;
-    return (grid >> pos) & 0b1111;
-}
-Board::Grid Board::set(Board::Grid const grid, int i, int j, int v){
-    int pos = i * 16 + j * 4;
-    return (grid & ~(UINT64_C(0b1111) << pos)) | ((v & (UINT64_C(0b1111))) << pos); // あふれてるかも
-}
-
 // Dir Board::decideDir() {
 //     Kihime kihime(grid);
 //     return kihime.decideDir();
@@ -215,57 +206,11 @@ Board::Grid Board::moved(Board::Grid grid, Dir dir){
     return moveLeft(grid);
 }
 
-bool Board::movable(Board::Grid grid, Dir dir){
-    return moved(grid, dir) != grid;
-}
-
 bool Board::alive(Board::Grid grid) {
     for(int i(0); i < 4; ++i)
         if(movable(grid, allDirs[i]))
             return true;
     return false;
-}
-
-int Board::log2(int i){
-    switch(i){
-    case 0:
-        return 0;
-    case 2:
-        return 1;
-    case 4:
-        return 2;
-    case 8:
-        return 3;
-    case 16:
-        return 4;
-    case 32:
-        return 5;
-    case 64:
-        return 6;
-    case 128:
-        return 7;
-    case 256:
-        return 8;
-    case 512:
-        return 9;
-    case 1024:
-        return 10;
-    case 2048:
-        return 11;
-    case 4096:
-        return 12;
-    case 8192:
-        return 13;
-    case 16384:
-        return 14;
-    default:
-        return 15;
-    }
-}
-
-int Board::pow2(int i){
-    static int const constexpr table[] = {0,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384};
-    return table[i];
 }
 
 template Dir Board::decideDir<Kihime>();
