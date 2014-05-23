@@ -27,41 +27,20 @@ Dir KoyoneNext::decideDir() const{
         top = npw3;
     }else{
         bool flg = true;
-        auto npw = nextPossibleWorld(grid);
-        decltype(npw) npw2, npw3, npw4, npw5;
-        for(auto const& e: npw){
-            for(auto const& e2: nextPossibleWorld(e.first))
-                npw2.push_back(make_pair(e2.first, e.second));
+        static int const constexpr ITERATION = 10;
+        Koyone::GridMap npws[ITERATION];
+        npws[0] = nextPossibleWorld(grid);
+        for(int i(0); i < ITERATION - 1; ++i){
+            for(auto const& e: npws[i]){
+                for(auto const& e2: nextPossibleWorld(e.first))
+                    npws[i+1].push_back(make_pair(e2.first, e.second));
+            }
+            if(flg && npws[i+1].empty()) {
+                top = std::move(npws[i]);
+                flg = false;
+            }
         }
-        if(flg && npw2.empty()) {
-            top = std::move(npw);
-            flg = false;
-        }
-        for(auto const& e: npw2){
-            for(auto const& e2: nextPossibleWorld(e.first))
-                npw3.push_back(make_pair(e2.first, e.second));
-        }
-        if(flg && npw3.empty()){
-            top = std::move(npw2);
-            flg = false;
-        }
-        for(auto const& e: npw3){
-            for(auto const& e2: nextPossibleWorld(e.first))
-                npw4.push_back(make_pair(e2.first, e.second));
-        }
-        if(flg && npw4.empty()){
-            top = std::move(npw3);
-            flg = false;
-        }
-        // for(auto const& e: npw4){
-        //     for(auto const& e2: nextPossibleWorld(e.first))
-        //         npw5.push_back(make_pair(e2.first, e.second));
-        // }
-        // if(flg && npw5.empty()){
-        //     top = std::move(npw4);
-        //     flg = false;
-        // }
-        top = npw4;
+        top = npws[ITERATION - 1];
     }
     return (std::max_element(std::begin(top), std::end(top), Koyone::CompStatic()))->second;
 }
@@ -86,9 +65,6 @@ Koyone::GridList KoyoneNext::nextPossibleWorldLeft(Board::Grid grid){
         for(int j(0); j < 4; ++j)
             if(Board::get(left, i, j) == 0)
                 left = Board::set(left, i, j, 1);
-    // printf("####----####----####\n");
-    // Board::show(left);
-    // printf("####----####----####\n");
     return { left };
 }
 
