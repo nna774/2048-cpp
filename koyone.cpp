@@ -85,10 +85,12 @@ Dir Koyone::decideDir() const{
 int Koyone::staticEval(Board::Grid grid){
     int sum(0);
     for(int i(0); i < 4; ++i)
-        for(int j(0); j < 4; ++j)
-            sum += Board::get(grid, i, j)
-                ? Board::pow2(Board::get(grid, i, j)) * Board::get(grid, i, j)
+        for(int j(0); j < 4; ++j){
+            auto get = Board::get(grid, i, j);
+            sum += get
+                ? Board::pow2(get) * get
                 : SPACE_WEIGHT;
+        }
     return sum;
 }
 
@@ -109,12 +111,6 @@ Koyone::GridMap Koyone::nextPossibleWorld(Board::Grid grid){
     for(auto e: down) map.push_back(std::make_pair(Board::transpose(Board::gridMirror(e)), Dir::Down));
     GridList up = nextPossibleWorldLeft(Board::transpose(grid));
     for(auto e: up) map.push_back(std::make_pair(Board::transpose(e), Dir::Up));
-//    vec.reserve(128);
-    // for(auto dir: allDirs){
-    //     GridList tmp = nextPossibleWorldLeft(Board::rotate(Board::rotate(grid, dir), Dir::Right));
-    //     for(auto e: tmp) map.insert(std::make_pair(Board::rotate(Board::rotate(e, Dir::Left), mirror(dir)), dir));
-    // }
-//    std::cout << "size: " << vec.size() << std::endl;
     return map;
 }
 

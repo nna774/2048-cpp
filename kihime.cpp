@@ -59,7 +59,9 @@ inline Board::Grid Kihime::moveAndBirth(Board::Grid grid, Dir dir){
     int zeros = Board::countZeroGrid(grid);
     if(zeros > 0){
         int point = mt() % zeros;
-        int birth = "1111111112"[mt() % 10] - '0'; // 10% で4、 のこりが2
+        int birth(0);
+        if(mt() % 10) birth = 1;
+        else birth = 2;
         for(int i(0); i < 4; ++i)
             for(int j(0); j < 4; ++j)
                 if(Board::get(moved, i, j) == 0)
