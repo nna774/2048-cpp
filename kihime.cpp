@@ -47,6 +47,7 @@ Dir Kihime::decideDir(){
 int Kihime::toDead(Board::Grid grid, int depth) {
     if(Board::alive(grid)){
         auto dir = allDirs[mt()%4];
+        while(! Board::movable(grid, dir)) dir = allDirs[mt()%4];
         auto moved = moveAndBirth(grid, dir);
         return toDead(moved, depth + 1);
     }
