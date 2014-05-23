@@ -199,20 +199,6 @@ Board::Grid Board::gridMirror(Board::Grid grid){
         ((grid & dhlp) << 12);
 }
 
-Board::Grid Board::moved(Board::Grid grid, Dir dir){
-    if(dir == Dir::Up) return transpose(moveLeft(transpose(grid)));
-    if(dir == Dir::Down) return transpose(gridMirror(moveLeft(gridMirror(transpose(grid)))));
-    if(dir == Dir::Right) return gridMirror(moveLeft(gridMirror(grid)));
-    return moveLeft(grid);
-}
-
-bool Board::alive(Board::Grid grid) {
-    for(int i(0); i < 4; ++i)
-        if(movable(grid, allDirs[i]))
-            return true;
-    return false;
-}
-
 template Dir Board::decideDir<Kihime>();
 template Dir Board::decideDir<Koyone>();
 template Dir Board::decideDir<KoyoneNext>();

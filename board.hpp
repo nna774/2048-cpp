@@ -60,12 +60,22 @@ public:
             ((uint64_t)table[(grid & UINT64_C(0x00000000FFFF0000)) >> 16] << 16) |
             ((uint64_t)table[(grid & UINT64_C(0x000000000000FFFF)) >> 00] << 00) ;
     }
-    static Grid moved(Grid, Dir);
+    static Grid moved(Board::Grid grid, Dir dir){
+        if(dir == Dir::Up) return transpose(moveLeft(transpose(grid)));
+        if(dir == Dir::Down) return transpose(gridMirror(moveLeft(gridMirror(transpose(grid)))));
+        if(dir == Dir::Right) return gridMirror(moveLeft(gridMirror(grid)));
+        return moveLeft(grid);
+    }
     static bool movable(Board::Grid grid, Dir dir){
         return moved(grid, dir) != grid;
     }
     static std::pair<bool,Grid> movedAndBirth(Grid, Dir);
-    static bool alive(Grid);
+    static bool alive(Board::Grid grid) {
+        for(int i(0); i < 4; ++i)
+            if(movable(grid, allDirs[i]))
+                return true;
+        return false;
+    }
     static int log2(int i){
         switch(i){
         case 0:
