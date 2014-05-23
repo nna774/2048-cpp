@@ -1,5 +1,6 @@
 CXX = g++
 O = -O3
+OPT = -O3
 
 all: main.o board.o koyone.o koyoneNext.o kihime.o nona7.o
 	$(CXX) $(OPT) main.o board.o koyone.o koyoneNext.o kihime.o nona7.o
