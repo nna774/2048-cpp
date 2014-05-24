@@ -117,11 +117,14 @@ public:
         return table[i];
     }
     static int countZeroGrid(Grid grid){
-        int cnt(0);
-        for(int i(0); i < 4; ++i)
-            for(int j(0); j < 4; ++j)
-                if(get(grid, i, j) == 0) ++cnt;
-        return cnt;
+        grid = ((grid & UINT64_C(0xCCCCCCCCCCCCCCCC)) >> 2) | (grid & UINT64_C(0x3333333333333333));
+        grid = ((grid & UINT64_C(0x2222222222222222)) >> 1) | (grid & UINT64_C(0x1111111111111111));
+
+        grid = ((grid & UINT64_C(0x1010101010101010)) >> 4) + (grid & UINT64_C(0x0101010101010101));
+        grid = grid + (grid >> 32);
+        grid = grid + (grid >> 16);
+        grid = grid + (grid >> 8);
+        return 16 - (grid & 0xFF);
     }
 private:
     std::string const endpoint;
