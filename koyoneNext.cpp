@@ -4,7 +4,6 @@ Dir KoyoneNext::decideDir() const{
     using std::make_pair;
     Koyone::GridMap top;
     int const ITERATION = Koyone::nurseryTime(grid) ? 4 : 10;
-    bool flg = true;
     Koyone::GridMap npws[ITERATION];
     npws[0] = nextPossibleWorld(grid);
     for(int i(0); i < ITERATION - 1; ++i){
@@ -13,9 +12,9 @@ Dir KoyoneNext::decideDir() const{
             for(auto const& e2: nextPossibleWorld(e.first))
                 npws[i+1].push_back(make_pair(e2.first, e.second));
         }
-        if(flg && npws[i+1].empty()) {
+        if(npws[i+1].empty()) {
             top = std::move(npws[i]);
-            flg = false;
+            break;
         }
     }
     top = npws[ITERATION - 1];
