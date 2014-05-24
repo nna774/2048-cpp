@@ -8,11 +8,11 @@ Dir KoyoneNext::decideDir() const{
     Koyone::GridMap npws[ITERATION];
     npws[0] = nextPossibleWorld(grid);
     for(int i(0); i < ITERATION - 1; ++i){
-//            Koyone::uniq(npws[i]);
+        npws[i+1].reserve(npws[i].size());
         for(auto const& e: npws[i]){
-                for(auto const& e2: nextPossibleWorld(e.first))
-                    npws[i+1].push_back(make_pair(e2.first, e.second));
-            }
+            for(auto const& e2: nextPossibleWorld(e.first))
+                npws[i+1].push_back(make_pair(e2.first, e.second));
+        }
         if(flg && npws[i+1].empty()) {
             top = std::move(npws[i]);
             flg = false;
