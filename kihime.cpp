@@ -17,7 +17,11 @@ Dir Kihime::decideDir(){
     depths.fill(0);
     std::array<double, 4> aves;
     aves.fill(0);
+    Dir max = Dir::Up;
+    double maxAve = 0.0;
+    bool flg = true;
 
+label:;
     for(int i(0); i < ITERATION; ++i){
         Dir dir = allDirs[mt()%4];
         while(! Board::movable(grid, dir)) dir = allDirs[mt()%4];
@@ -33,13 +37,16 @@ Dir Kihime::decideDir(){
         }
         aves[i] = depths[i] / (cnt[i] * 1.0);
     }
-    Dir max = Dir::Up;
-    double maxAve = 0.0;
     for(int i(0); i < 4; ++i){
         if(aves[i] > maxAve){
             max = allDirs[i];
             maxAve = aves[i];
         }
+    }
+    if(flg && maxAve < DANGER){
+        flg = false;
+        maxAve = 0;
+        goto label;
     }
     return max;
 }

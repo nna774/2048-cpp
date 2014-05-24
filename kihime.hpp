@@ -15,7 +15,8 @@ private:
     static std::random_device rnd;
     static std::mt19937 mt;
     static std::mt19937 mtInit();
-    static int const constexpr ITERATION = 10000;
+    static int const constexpr ITERATION = 5000;
+    static int const constexpr DANGER = 10;
     static int toDead(Board::Grid, int);
     static Board::Grid moveAndBirth(Board::Grid, Dir);
 };
