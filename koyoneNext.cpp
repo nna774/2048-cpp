@@ -3,45 +3,22 @@
 Dir KoyoneNext::decideDir() const{
     using std::make_pair;
     Koyone::GridMap top;
-    if(Koyone::nurseryTime(grid)) {
-        bool flg = true;
-        auto npw = Koyone::nextPossibleWorld(grid);
-        decltype(npw) npw2, npw3;
-        npw2.reserve(1024 * 12);
-        for(auto e: npw){
-            for(auto e2: Koyone::nextPossibleWorld(e.first))
-                npw2.push_back(make_pair(e2.first, e.second));
-        }
-        if(npw2.empty()) {
-            top = std::move(npw);
-            flg = false;
-        }
-        for(auto e: npw2){
-            for(auto e2: Koyone::nextPossibleWorld(e.first))
-                npw3.push_back(make_pair(e2.first, e.second));
-        }
-        if(flg && npw3.empty()) {
-            top = std::move(npw2);
-            flg = false;
-        }
-        top = npw3;
-    }else{
-        bool flg = true;
-        static int const constexpr ITERATION = 10;
-        Koyone::GridMap npws[ITERATION];
-        npws[0] = nextPossibleWorld(grid);
-        for(int i(0); i < ITERATION - 1; ++i){
-            for(auto const& e: npws[i]){
+    int const ITERATION = Koyone::nurseryTime(grid) ? 4 : 10;
+    bool flg = true;
+    Koyone::GridMap npws[ITERATION];
+    npws[0] = nextPossibleWorld(grid);
+    for(int i(0); i < ITERATION - 1; ++i){
+//            Koyone::uniq(npws[i]);
+        for(auto const& e: npws[i]){
                 for(auto const& e2: nextPossibleWorld(e.first))
                     npws[i+1].push_back(make_pair(e2.first, e.second));
             }
-            if(flg && npws[i+1].empty()) {
-                top = std::move(npws[i]);
-                flg = false;
-            }
+        if(flg && npws[i+1].empty()) {
+            top = std::move(npws[i]);
+            flg = false;
         }
-        top = npws[ITERATION - 1];
     }
+    top = npws[ITERATION - 1];
     return (std::max_element(std::begin(top), std::end(top), Koyone::CompStatic()))->second;
 }
 
