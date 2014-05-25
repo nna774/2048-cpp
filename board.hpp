@@ -29,8 +29,6 @@ Dir constexpr mirror(Dir dir){
 }
 
 class Board{
-private:
-    static std::array<uint16_t, 1 << 16> const table;
 public:
     Board();
     Board(std::string const protocol, std::string const endpoint, std::string const port);
@@ -71,6 +69,7 @@ public:
             ((grid & dhlp) << 12);
     }
     static Grid moveLeft(Board::Grid grid){
+        static std::array<uint16_t, 1 << 16> const table = Board::makeTable();
         return
             ((uint64_t)table[(grid & UINT64_C(0xFFFF000000000000)) >> 48] << 48) |
             ((uint64_t)table[(grid & UINT64_C(0x0000FFFF00000000)) >> 32] << 32) |
@@ -162,13 +161,13 @@ public:
         grid = grid + (grid >> 8);
         return 16 - (grid & 0xFF);
     }
+    static std::array<uint16_t, 1 << 16> makeTable();
 private:
     std::string const endpoint;
     int fd;
     std::string sessionID;
     std::random_device seed_gen;
     int toDead(std::pair<bool,Grid>);
-    static std::array<uint16_t, 1 << 16> makeTable();
     static std::array<bool, 1 << 16> makeMovableTable();
     Grid grid;
     static int moveUpImp(int);

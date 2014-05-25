@@ -212,10 +212,8 @@ std::array<uint16_t, 1 << 16> Board::makeTable(){
     return table;
 }
 
-std::array<uint16_t, 1 << 16> const Board::table = makeTable();
-
-
 std::array<bool, 1 << 16> Board::makeMovableTable(){
+    static std::array<uint16_t, 1 << 16> const table = Board::makeTable();
     std::array<bool, 1 << 16> mTable;
     for(int i(0); i< 1<<16; ++i)
         mTable[i] = table[i] != i;

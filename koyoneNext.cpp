@@ -17,7 +17,7 @@ Dir KoyoneNext::decideDir() const{
             break;
         }
     }
-    top = npws[ITERATION - 1];
+    top = std::move(npws[ITERATION - 1]);
     return (std::max_element(std::begin(top), std::end(top), Koyone::CompStatic()))->second;
 }
 
@@ -34,7 +34,7 @@ Koyone::GridMap KoyoneNext::nextPossibleWorld(Board::Grid grid){
     return map;
 }
 
-Koyone::GridList KoyoneNext::nextPossibleWorldLeft(Board::Grid grid){
+inline Koyone::GridList KoyoneNext::nextPossibleWorldLeft(Board::Grid grid){
     auto left = Board::moveLeft(grid);
     if(left == grid) return {};
     for(int i(0); i < 4; ++i)
