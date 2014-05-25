@@ -56,12 +56,9 @@ Board::Board(std::string const, std::string const endpoint, std::string const po
 
     std::istringstream is(buf);
     std::string tmp, URI;
-    std::getline (is, tmp);
-    std::getline (is, tmp);
-    std::getline (is, tmp);
-    std::istringstream is02(tmp);
 
-    is02 >> tmp >> URI;
+    while(tmp != "Location:") is >> tmp;
+    is >> URI;
     sessionID = URI.substr(10, 40 );
     req = "GET " + URI + "\nHost: " + endpoint + "\nConnection: Keep-Alive\n\n";
     write(sfd, req.c_str(), req.size());
