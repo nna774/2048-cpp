@@ -150,7 +150,6 @@ private:
     std::random_device seed_gen;
     int toDead(std::pair<bool,Grid>);
     static std::array<uint16_t, 1 << 16> makeTable();
-public:
     Grid grid;
     static int moveUpImp(int);
 };
