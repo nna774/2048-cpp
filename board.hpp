@@ -27,9 +27,6 @@ Dir constexpr mirror(Dir dir){
      * if (dir == Dir::Right) return Dir::Left; */
     return (dir == Dir::Up || dir == Dir::Down) ? dir : (dir == Dir::Left) ? Dir::Right : Dir::Left;
 }
-namespace {
-    std::array<bool, 1 << 16>  makeMovableTable();
-}
 
 class Board{
 private:
@@ -72,13 +69,17 @@ public:
         switch(dir){
         case Dir::Left:
             grid = grid;
+            break;
         case Dir::Right:
             grid = Board::gridMirror(grid);
+            break;
         case Dir::Up:
             grid = Board::transpose(grid);
+            break;
         case Dir::Down:
         default:
             grid = Board::gridMirror(Board::transpose(grid));
+            break;
         }
         return
             movableTable[(grid & UINT64_C(0xFFFF000000000000)) >> 48] |
@@ -150,14 +151,8 @@ private:
     std::random_device seed_gen;
     int toDead(std::pair<bool,Grid>);
     static std::array<uint16_t, 1 << 16> makeTable();
+    static std::array<bool, 1 << 16> makeMovableTable();
     Grid grid;
     static int moveUpImp(int);
 };
 
-namespace {
-    std::array<bool, 1 << 16>  makeMovableTable(){
-        std::array<bool, 1 << 16> mTable;
-        
-        return mTable;
-    }
-};
