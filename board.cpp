@@ -176,29 +176,6 @@ Board::Grid Board::rotate(Board::Grid grid, Dir dir){
     }
 }
 
-Board::Grid Board::transpose(Board::Grid grid){
-    uint64_t
-        cdgh = UINT64_C(0x00FF00FF00000000),
-        ijmn = UINT64_C(0x00000000FF00FF00),
-        bdjl = UINT64_C(0x0F0F00000F0F0000),
-        egmo = UINT64_C(0x0000F0F00000F0F0);
-    grid = (grid & ~cdgh & ~ijmn) | ((grid & cdgh) >> 24) | ((grid & ijmn) << 24);
-    return (grid & ~bdjl & ~egmo) | ((grid & bdjl) >> 12) | ((grid & egmo) << 12);
-}
-
-Board::Grid Board::gridMirror(Board::Grid grid){
-    uint64_t
-        aeim = UINT64_C(0xF000F000F000F000),
-        bfjn = UINT64_C(0x0F000F000F000F00),
-        cgko = UINT64_C(0x00F000F000F000F0),
-        dhlp = UINT64_C(0x000F000F000F000F);
-    return
-        ((grid & aeim) >> 12)|
-        ((grid & bfjn) >> 4) |
-        ((grid & cgko) << 4) |
-        ((grid & dhlp) << 12);
-}
-
 std::array<uint16_t, 1 << 16> Board::makeTable(){
     std::array<uint16_t, 1 << 16> table;
     auto const constexpr k = 0;

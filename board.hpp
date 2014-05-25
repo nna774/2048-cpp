@@ -49,8 +49,27 @@ public:
         return (grid & ~(UINT64_C(0b1111) << pos)) | ((v & (UINT64_C(0b1111))) << pos);
     }
     static Grid rotate(Grid, Dir);
-    static Grid transpose(Grid);
-    static Grid gridMirror(Grid);
+    static Grid transpose(Board::Grid grid){
+        static uint64_t const
+            cdgh = UINT64_C(0x00FF00FF00000000),
+            ijmn = UINT64_C(0x00000000FF00FF00),
+            bdjl = UINT64_C(0x0F0F00000F0F0000),
+            egmo = UINT64_C(0x0000F0F00000F0F0);
+        grid = (grid & ~cdgh & ~ijmn) | ((grid & cdgh) >> 24) | ((grid & ijmn) << 24);
+        return (grid & ~bdjl & ~egmo) | ((grid & bdjl) >> 12) | ((grid & egmo) << 12);
+    }
+    static Grid gridMirror(Board::Grid grid){
+        static uint64_t const
+            aeim = UINT64_C(0xF000F000F000F000),
+            bfjn = UINT64_C(0x0F000F000F000F00),
+            cgko = UINT64_C(0x00F000F000F000F0),
+            dhlp = UINT64_C(0x000F000F000F000F);
+        return
+            ((grid & aeim) >> 12)|
+            ((grid & bfjn) >> 4) |
+            ((grid & cgko) << 4) |
+            ((grid & dhlp) << 12);
+    }
     static Grid moveLeft(Board::Grid grid){
         return
             ((uint64_t)table[(grid & UINT64_C(0xFFFF000000000000)) >> 48] << 48) |
@@ -68,7 +87,6 @@ public:
         static std::array<bool, 1 << 16> const movableTable = makeMovableTable();
         switch(dir){
         case Dir::Left:
-            grid = grid;
             break;
         case Dir::Right:
             grid = Board::gridMirror(grid);
