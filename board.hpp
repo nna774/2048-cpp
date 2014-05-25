@@ -28,10 +28,12 @@ Dir constexpr mirror(Dir dir){
     return (dir == Dir::Up || dir == Dir::Down) ? dir : (dir == Dir::Left) ? Dir::Right : Dir::Left;
 }
 namespace {
-    std::array<uint16_t, 1 << 16>  makeTable();
+    std::array<bool, 1 << 16>  makeMovableTable();
 }
 
 class Board{
+private:
+    static std::array<uint16_t, 1 << 16> const table;
 public:
     Board();
     Board(std::string const protocol, std::string const endpoint, std::string const port);
@@ -53,7 +55,6 @@ public:
     static Grid transpose(Grid);
     static Grid gridMirror(Grid);
     static Grid moveLeft(Board::Grid grid){
-        static std::array<uint16_t, 1 << 16> const table = makeTable();
         return
             ((uint64_t)table[(grid & UINT64_C(0xFFFF000000000000)) >> 48] << 48) |
             ((uint64_t)table[(grid & UINT64_C(0x0000FFFF00000000)) >> 32] << 32) |
@@ -67,7 +68,23 @@ public:
         return moveLeft(grid);
     }
     static bool movable(Board::Grid grid, Dir dir){
-        return moved(grid, dir) != grid;
+        static std::array<bool, 1 << 16> const movableTable = makeMovableTable();
+        switch(dir){
+        case Dir::Left:
+            grid = grid;
+        case Dir::Right:
+            grid = Board::gridMirror(grid);
+        case Dir::Up:
+            grid = Board::transpose(grid);
+        case Dir::Down:
+        default:
+            grid = Board::gridMirror(Board::transpose(grid));
+        }
+        return
+            movableTable[(grid & UINT64_C(0xFFFF000000000000)) >> 48] |
+            movableTable[(grid & UINT64_C(0x0000FFFF00000000)) >> 32] |
+            movableTable[(grid & UINT64_C(0x00000000FFFF0000)) >> 16] |
+            movableTable[(grid & UINT64_C(0x000000000000FFFF)) >> 00] ;
     }
     static std::pair<bool,Grid> movedAndBirth(Grid, Dir);
     static bool alive(Board::Grid grid) {
@@ -132,46 +149,16 @@ private:
     std::string sessionID;
     std::random_device seed_gen;
     int toDead(std::pair<bool,Grid>);
+    static std::array<uint16_t, 1 << 16> makeTable();
 public:
     Grid grid;
     static int moveUpImp(int);
 };
 
 namespace {
-    std::array<uint16_t, 1 << 16>  makeTable(){
-        std::array<uint16_t, 1 << 16> table;
-        auto const constexpr k = 0;
-        for(int orig(0); orig < 1 << 16;++orig){
-            auto grid = orig;
-            bool joined = false;
-            bool hit = false;
-            for(int i(0); i < 4;++i){
-                if(Board::get(grid, k, i) == 0) continue;
-                hit = false;
-                for(int j(i-1); j >= 0;--j){
-                    if(Board::get(grid, k, j) == 0) continue;
-                    if(Board::get(grid, k, j) == Board::get(grid, k, i) && !joined){
-                        grid = Board::set(grid, k, j, Board::get(grid, k, j) + 1);
-                        grid = Board::set(grid, k, i, 0);
-                        joined = true;
-                    }else{
-                        if(j + 1 != i){
-                            grid = Board::set(grid, k, j+1, Board::get(grid, k, i));
-                            grid = Board::set(grid, k, i, 0);
-                        }
-                        joined = false;
-                    }
-                    hit = true;
-                    break;
-                }
-                if(i != 0 && ! hit){
-                    grid = Board::set(grid, k, 0, Board::get(grid, k, i));
-                    grid = Board::set(grid, k, i, 0);
-                }
-            }
-            table[orig] = grid;
-        }
-        return table;
+    std::array<bool, 1 << 16>  makeMovableTable(){
+        std::array<bool, 1 << 16> mTable;
+        
+        return mTable;
     }
 };
-
