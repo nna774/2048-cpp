@@ -51,28 +51,33 @@ Board::Board(std::string const, std::string const endpoint, std::string const po
     
     std::string req = "GET /hi/start/json HTTP/1.1\nHost: " + endpoint + "\n\n"; //// #### TODO: 共通部分の関数化 ####
     write(sfd, req.c_str(), req.size());
-    char buf[512];
-    read(sfd, buf, 255);
+    char buf[256];
+    read(sfd, buf, 256);
 
     std::istringstream is(buf);
     std::string tmp, URI;
-
+    std::cout << "loc" << std::endl;
     while(tmp != "Location:") is >> tmp;
+    std::cout << "loc" << std::endl;
     is >> URI;
-    sessionID = URI.substr(10, 40 );
+    sessionID = URI.substr(10, 40);
     req = "GET " + URI + "\nHost: " + endpoint + "\nConnection: Keep-Alive\n\n";
     write(sfd, req.c_str(), req.size());
-    read(sfd, buf, 512);
-    std::istringstream is03(buf);
-    std::getline (is03, tmp);
-    std::getline (is03, tmp);
-    std::getline (is03, tmp);
-    std::getline (is03, tmp);
-    std::getline (is03, tmp);
-    std::getline (is03, tmp);
-    std::getline (is03, tmp); // JSON は8行目にある 酷い……
+    char buf2[1024];
+    read(sfd, buf2, 1024);
+    std::istringstream is03(buf2);
+    tmp = "tmp";
+    std::cout << "json" << std::endl;
+    int cnt(0);
+    while(tmp[0] != '{'){
+        std::getline(is03, tmp);
+        std::cout << cnt << tmp << std::endl;
+        if(cnt++ > 10) throw;
+    }
+    std::cout << "json" << std::endl;
+    std::istringstream is04(tmp);
     picojson::value v;
-    is03 >> v;
+    is04 >> v;
     // std::cout << v;
     grid = UINT64_C(0);
     auto g = v.get("grid");
@@ -93,25 +98,29 @@ Board::Board(std::string const, std::string const endpoint, std::string const po
 bool Board::move(Dir dir){
     std::ostringstream req;
     req << "GET /hi/state/" << sessionID << "/move/" << dirToInt(dir) << "/json\nHost: " << endpoint << "\nConnection: Keep-Alive\n\n";
-    write(fd, req.str().c_str(), req.str().size());
+    std::cout << "size: " << req.str().size() << std::endl;
+    std::cout << "size: " << write(fd, req.str().c_str(), req.str().size()) << std::endl;
     char buf[512];
-    read(fd, buf, 512);
-
-    std::string tmp;
-    // std::cout << buf << '\n';
+    int ret = read(fd, buf, 512);
+    std::cout << ret << "\n";
+    if(ret == -1) {
+        throw;
+    }
+    std::cout << buf << "\n";
+    std::string tmp = "tmp";
     std::istringstream is03(buf);
-    std::getline (is03, tmp);
-    std::getline (is03, tmp);
-    std::getline (is03, tmp);
-    std::getline (is03, tmp);
-    std::getline (is03, tmp);
-    std::getline (is03, tmp);
-    std::getline (is03, tmp); // JSON は8行目にある 酷い……
+    int cnt(0);
+    while(tmp[0] != '{'){
+        std::getline(is03, tmp);
+        std::cout << cnt << tmp << std::endl;
+        if(cnt++ > 10) throw;
+    }
+    std::istringstream is04(tmp);
     picojson::value v;
-    is03 >> v;
+    is04 >> v;
 
     grid = UINT64_C(0);
-    std::cout << v << std::endl;
+    std::cout << v.serialize() << std::endl;
     auto g = v.get("grid");
     picojson::array arr = g.get<picojson::array>();
     for(int i(0); i < 4; ++i){
