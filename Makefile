@@ -22,7 +22,7 @@ kihime.o: kihime.cpp kihime.hpp
 nona7.o: nona7.cpp nona7.hpp
 
 clean:
-	rm -f *.o $(OUTNAME) *.gcda
+	rm -f *.o $(OUTNAME) *.gcda gmon.out 
 
 test:
 	echo do nothing
