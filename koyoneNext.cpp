@@ -1,5 +1,4 @@
 #include "koyoneNext.hpp"
-
 Dir KoyoneNext::decideDir() const{
     using std::make_pair;
     Koyone::GridMap top;
@@ -19,7 +18,29 @@ Dir KoyoneNext::decideDir() const{
             break;
         }
     }
-    if(flg) top = std::move(npws[ITERATION - 1]);
+    Koyone::uniq(top);
+    if(flg){
+        top = std::move(npws[ITERATION - 1]);
+        if(top.size() < DANGER){
+            int const ITERATION = 5;
+            Koyone::GridMap npws[ITERATION];
+            npws[0] = std::move(top);
+            for(int i(0); i < ITERATION - 1; ++i){
+                npws[i+1].reserve(npws[i].size());
+                for(auto const& e: npws[i]){
+                    for(auto const& e2: nextPossibleWorld(e.first))
+                        npws[i+1].push_back(make_pair(e2.first, e.second));
+                }
+                if(npws[i+1].empty()) {
+                    top = std::move(npws[i]);
+                    flg = false;
+                    break;
+                }
+            }
+            top = std::move(npws[ITERATION - 1]);
+        }
+    }
+    Koyone::uniq(top);
     return (std::max_element(std::begin(top), std::end(top), Koyone::CompStatic()))->second;
 }
 
