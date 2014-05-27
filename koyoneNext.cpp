@@ -1,6 +1,6 @@
 #include "koyoneNext.hpp"
 
-Koyone::GridMap KoyoneNext::iterarion(Koyone::GridMap&& map, int ITERATION){
+inline Koyone::GridMap KoyoneNext::iterarion(Koyone::GridMap&& map, int ITERATION){
     Koyone::GridMap npws[ITERATION];
     npws[0] = map;
     for(int i(0); i < ITERATION - 1; ++i){
@@ -26,16 +26,16 @@ Dir KoyoneNext::decideDir() const{
     return (std::max_element(std::begin(top), std::end(top), Koyone::CompStatic()))->second;
 }
 
-Koyone::GridMap KoyoneNext::nextPossibleWorld(Board::Grid grid){
+inline Koyone::GridMap KoyoneNext::nextPossibleWorld(Board::Grid grid){
     Koyone::GridMap map;
     Koyone::GridList lefts = nextPossibleWorldLeft(grid);
-    for(auto e: lefts) map.push_back(std::make_pair(e, Dir::Left));
+    for(auto e: lefts) map.emplace_back(e, Dir::Left);
     Koyone::GridList right = nextPossibleWorldLeft(Board::gridMirror(grid));
-    for(auto e: right) map.push_back(std::make_pair(Board::gridMirror(e), Dir::Right));
+    for(auto e: right) map.emplace_back(Board::gridMirror(e), Dir::Right);
     Koyone::GridList down = nextPossibleWorldLeft(Board::gridMirror(Board::transpose(grid)));
-    for(auto e: down) map.push_back(std::make_pair(Board::transpose(Board::gridMirror(e)), Dir::Down));
+    for(auto e: down) map.emplace_back(Board::transpose(Board::gridMirror(e)), Dir::Down);
     Koyone::GridList up = nextPossibleWorldLeft(Board::transpose(grid));
-    for(auto e: up) map.push_back(std::make_pair(Board::transpose(e), Dir::Up));
+    for(auto e: up) map.emplace_back(Board::transpose(e), Dir::Up);
     return map;
 }
 
