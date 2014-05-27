@@ -1,46 +1,28 @@
 #include "koyoneNext.hpp"
-Dir KoyoneNext::decideDir() const{
-    using std::make_pair;
-    Koyone::GridMap top;
-    bool flg(true);
-    int const ITERATION = Koyone::nurseryTime(grid) ? 4 : 10;
+
+Koyone::GridMap KoyoneNext::iterarion(Koyone::GridMap&& map, int ITERATION){
     Koyone::GridMap npws[ITERATION];
-    npws[0] = nextPossibleWorld(grid);
+    npws[0] = map;
     for(int i(0); i < ITERATION - 1; ++i){
         npws[i+1].reserve(npws[i].size());
         for(auto const& e: npws[i]){
             for(auto const& e2: nextPossibleWorld(e.first))
-                npws[i+1].push_back(make_pair(e2.first, e.second));
+                npws[i+1].emplace_back(e2.first, e.second);
         }
-        if(npws[i+1].empty()) {
-            top = std::move(npws[i]);
-            flg = false;
-            break;
-        }
+        if(npws[i+1].empty()) return npws[i];
     }
-    Koyone::uniq(top);
-    if(flg){
-        top = std::move(npws[ITERATION - 1]);
-        if(top.size() < DANGER){
-            int const ITERATION = 5;
-            Koyone::GridMap npws[ITERATION];
-            npws[0] = std::move(top);
-            for(int i(0); i < ITERATION - 1; ++i){
-                npws[i+1].reserve(npws[i].size());
-                for(auto const& e: npws[i]){
-                    for(auto const& e2: nextPossibleWorld(e.first))
-                        npws[i+1].push_back(make_pair(e2.first, e.second));
-                }
-                if(npws[i+1].empty()) {
-                    top = std::move(npws[i]);
-                    flg = false;
-                    break;
-                }
-            }
-            top = std::move(npws[ITERATION - 1]);
-        }
+    return npws[ITERATION - 1];
+}
+
+Dir KoyoneNext::decideDir() const{
+    using std::make_pair;
+    int const ITERATION = Koyone::nurseryTime(grid) ? 4 : 10;
+    Koyone::GridMap top = iterarion(nextPossibleWorld(grid), ITERATION);
+    if(top.size() < DANGER){
+        Koyone::uniq(top);
+        int const ITERATION = 5;
+        top = iterarion(std::move(top), ITERATION);;
     }
-    Koyone::uniq(top);
     return (std::max_element(std::begin(top), std::end(top), Koyone::CompStatic()))->second;
 }
 
