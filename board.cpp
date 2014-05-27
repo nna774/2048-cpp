@@ -186,7 +186,7 @@ std::array<uint16_t, 1 << 16> Board::makeTable(){
             for(int j(i-1); j >= 0;--j){
                 if(Board::get(grid, k, j) == 0) continue;
                 if(Board::get(grid, k, j) == Board::get(grid, k, i) && !joined){
-                    grid = Board::set(grid, k, j, Board::get(grid, k, j) + 1);
+                    grid = Board::set(grid, k, j, (Board::get(grid, k, j) + 1) & 0b1111);
                     grid = Board::set(grid, k, i, 0);
                     joined = true;
                 }else{
