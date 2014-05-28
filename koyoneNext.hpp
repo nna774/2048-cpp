@@ -8,7 +8,7 @@ public:
     Dir decideDir() const;
 private:
     Board::Grid grid;
-    static int const constexpr DANGER = 30000;
+    static unsigned int const constexpr DANGER = 30000;
     static Koyone::GridMap nextPossibleWorld(Board::Grid);
     static Koyone::GridList nextPossibleWorldLeft(Board::Grid);
     static Koyone::GridMap iterarion(Koyone::GridMap&&, int);
