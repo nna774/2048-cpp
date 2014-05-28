@@ -50,9 +50,9 @@ Board::Board(std::string const, std::string const endpoint, std::string const po
     fd = sfd;
     
     std::string req = "GET /hi/start/json HTTP/1.1\nHost: " + endpoint + "\n\n"; //// #### TODO: 共通部分の関数化 ####
-    write(sfd, req.c_str(), req.size());
+    if(write(sfd, req.c_str(), req.size()) < 0) std::cerr << "something Wrong..." << std::endl;
     char buf[512];
-    read(sfd, buf, 255);
+    if(read(sfd, buf, 255) < 0)  std::cerr << "something Wrong..." << std::endl;
 
     std::istringstream is(buf);
     std::string tmp, URI;
@@ -61,8 +61,8 @@ Board::Board(std::string const, std::string const endpoint, std::string const po
     is >> URI;
     sessionID = URI.substr(10, 40 );
     req = "GET " + URI + "\nHost: " + endpoint + "\nConnection: Keep-Alive\n\n";
-    write(sfd, req.c_str(), req.size());
-    read(sfd, buf, 512);
+    if(write(sfd, req.c_str(), req.size()) < 0) std::cerr << "something Wrong..." << std::endl;
+    if(read(sfd, buf, 512) < 0) std::cerr << "something Wrong..." << std::endl;
     std::istringstream is03(buf);
     std::getline (is03, tmp);
     std::getline (is03, tmp);
@@ -93,9 +93,9 @@ Board::Board(std::string const, std::string const endpoint, std::string const po
 bool Board::move(Dir dir){
     std::ostringstream req;
     req << "GET /hi/state/" << sessionID << "/move/" << dirToInt(dir) << "/json\nHost: " << endpoint << "\nConnection: Keep-Alive\n\n";
-    write(fd, req.str().c_str(), req.str().size());
+    if(write(fd, req.str().c_str(), req.str().size()) < 0) std::cerr << "something Wrong..." << std::endl;
     char buf[512];
-    read(fd, buf, 512);
+    if(read(fd, buf, 512) < 0) std::cerr << "something Wrong..." << std::endl;
 
     std::string tmp;
     // std::cout << buf << '\n';
