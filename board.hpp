@@ -72,10 +72,10 @@ public:
     static Grid moveLeft(Board::Grid grid){
         static std::array<uint16_t, 1 << 16> const table = Board::makeTable();
         return
-            ((uint64_t)table[(grid & UINT64_C(0xFFFF000000000000)) >> 48] << 48) |
-            ((uint64_t)table[(grid & UINT64_C(0x0000FFFF00000000)) >> 32] << 32) |
-            ((uint64_t)table[(grid & UINT64_C(0x00000000FFFF0000)) >> 16] << 16) |
-            ((uint64_t)table[(grid & UINT64_C(0x000000000000FFFF)) >> 00] << 00) ;
+            (static_cast<uint64_t>(table[(grid & UINT64_C(0xFFFF000000000000)) >> 48]) << 48) |
+            (static_cast<uint64_t>(table[(grid & UINT64_C(0x0000FFFF00000000)) >> 32]) << 32) |
+            (static_cast<uint64_t>(table[(grid & UINT64_C(0x00000000FFFF0000)) >> 16]) << 16) |
+            (static_cast<uint64_t>(table[(grid & UINT64_C(0x000000000000FFFF)) >> 00]) << 00) ;
     }
     static Grid moved(Board::Grid grid, Dir dir){
         if(dir == Dir::Up) return transpose(moveLeft(transpose(grid)));
