@@ -18,9 +18,9 @@ public:
         bool operator()(std::pair<Grid, Dir> a, std::pair<Grid, Dir> b){
             return staticEval(a.first) < staticEval(b.first);
         }
-        bool operator()(Grid a, Grid b){
-            return staticEval(a) < staticEval(b);
-        }
+        // bool operator()(Grid a, Grid b){
+        //     return staticEval(a) < staticEval(b);
+        // }
     };
     struct CompGrid{
         bool operator()(std::pair<Grid, Dir> a, std::pair<Grid, Dir> b){

@@ -56,28 +56,7 @@ Dir Koyone::decideDir() const{
         }
         if(npw6.empty()) goto empty;
         top = npw6;
-
     }
-        // std::cout << "before uniq of 4: " << npw4.size() << std::endl;
-        // std::sort(std::begin(npw4), std::end(npw4));
-        // auto newEnd = std::unique(std::begin(npw4), std::end(npw4), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
-        // npw4.erase(newEnd, std::end(npw4));
-        // std::cout << "after uniq of 4: " << npw4.size() << std::endl;
-        // npw5.reserve(1024 * 12);
-    //     // もう一回
-    //     // std::cout << "before uniq of 5: " << npw5.size() << std::endl;
-    //     // std::sort(std::begin(npw5), std::end(npw5));
-    //     // newEnd = std::unique(std::begin(npw5), std::end(npw5), [](std::pair<Board::Grid, Dir> const& a, std::pair<Board::Grid, Dir> const& b) -> bool { return a.first == b.first; });
-    //     // npw5.erase(newEnd, std::end(npw5));
-    //     // std::cout << "after uniq of 5: " << npw5.size() << std::endl;
-    //     // npw6.reserve(1024 * 120);
-    //     for(auto const& e: npw5){
-    //         for(auto const& e2: nextPossibleWorld(e.first))
-    //             npw6.insert(make_pair(e2.first, e.second));
-    //     }
-    //     if(npw6.empty()) goto empty;
-    //     top = npw6;
-    // }
     empty: ;
     return (std::max_element(std::begin(top), std::end(top), CompStatic()))->second;
 }

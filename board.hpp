@@ -45,7 +45,7 @@ public:
     static Grid set(Board::Grid const grid, int i, int j, uint64_t v){
         int pos = i * 16 + j * 4;
         return (grid & ~(UINT64_C(0b1111) << pos)) | (v << pos); // v が4bit 超えてると死ぬ
-        return (grid & ~(UINT64_C(0b1111) << pos)) | (v & (UINT64_C(0b1111)) << pos);
+        // return (grid & ~(UINT64_C(0b1111) << pos)) | (v & (UINT64_C(0b1111)) << pos);
     }
     static Grid rotate(Grid, Dir);
     static Grid transpose(Board::Grid grid){
