@@ -21,7 +21,7 @@ Dir KoyoneNext::decideDir() const{
     if(top.size() < DANGER){
         Koyone::uniq(top);
         int const ITERATION = 5;
-        top = iterarion(std::move(top), ITERATION);;
+        top = iterarion(std::move(top), ITERATION);
     }
     return (std::max_element(std::begin(top), std::end(top), Koyone::CompStatic()))->second;
 }
