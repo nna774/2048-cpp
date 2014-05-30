@@ -5,3 +5,4 @@ gmon.out
 out/*
 2048-ai
 *.gcda
+\#*\#
