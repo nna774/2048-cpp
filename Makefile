@@ -33,4 +33,4 @@ release:
 	$(CXX) $(OPT) $(RELEASE) --std=c++11 -Wall -Wextra main.cpp board.cpp koyone.cpp koyoneNext.cpp kihime.cpp nona7.cpp -o $(OUTNAME)
 
 test:
-	cd test; make clean; make test
+	cd test; make test
