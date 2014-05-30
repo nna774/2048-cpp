@@ -5,14 +5,14 @@ std::mt19937 Kihime::mt = Kihime::mtInit();
 
 std::mt19937 Kihime::mtInit(){
     std::vector<std::uint_least32_t> v(10);
-    for(auto& e:v) e = rnd();
+    for(auto& e: v) e = rnd();
     std::seed_seq seq(begin(v), end(v));
     std::mt19937 mt(seq);
     return mt;
 }
 
 Dir Kihime::decideDir(){
-    std::array<int, 4> cnt, depths;
+    std::array<unsigned int, 4> cnt, depths;
     cnt.fill(0);
     depths.fill(0);
     std::array<double, 4> aves;
@@ -26,7 +26,7 @@ label:;
         Dir dir = allDirs[mt()%4];
         while(! Board::movable(grid, dir)) dir = allDirs[mt()%4];
         auto moved = Board::moved(grid, dir);
-        int depth = toDead(moved, 0);
+        unsigned depth = toDead(moved, 0);
         depths[dirToInt(dir)] += depth;
         ++cnt[dirToInt(dir)];
     }
