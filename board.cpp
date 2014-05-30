@@ -173,12 +173,14 @@ Board::Grid Board::rotate(Board::Grid grid, Dir dir){
     }
 }
 
-std::array<uint16_t, 1 << 16> Board::makeTable(){
+std::pair<std::array<uint16_t, 1 << 16>, std::array<int, 1 << 16>> Board::makeTable(){
     std::array<uint16_t, 1 << 16> table;
-    for(int orig(0); orig < 1 << 16;++orig){
+    std::array<int, 1 << 16> scoreTable;
+    for(int orig(0); orig < 1 << 16; ++orig){
         auto grid = orig;
         bool joined = false;
         bool hit = false;
+	int score = 0;
         for(int i(0); i < 4; ++i){
             if(Board::get(grid, 0, i) == 0) continue;
             hit = false;
@@ -188,6 +190,7 @@ std::array<uint16_t, 1 << 16> Board::makeTable(){
                     auto const gotten = Board::get(grid, 0, j);
                     grid = Board::set(grid, 0, j, gotten == 0b1111 ? gotten : gotten + 1);
                     grid = Board::set(grid, 0, i, 0);
+		    score += pow2(gotten + 1);
                     joined = true;
                 }else{
                     if(j + 1 != i){
@@ -205,12 +208,13 @@ std::array<uint16_t, 1 << 16> Board::makeTable(){
             }
         }
         table[orig] = grid;
+	scoreTable[orig] = score;
     }
-    return table;
+    return {table, scoreTable};
 }
 
 std::array<bool, 1 << 16> Board::makeMovableTable(){
-    static std::array<uint16_t, 1 << 16> const table = Board::makeTable();
+    static std::array<uint16_t, 1 << 16> const table = Board::makeTable().first;
     std::array<bool, 1 << 16> mTable;
     for(int i(0); i< 1<<16; ++i)
         mTable[i] = table[i] != i;

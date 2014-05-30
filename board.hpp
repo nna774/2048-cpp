@@ -70,7 +70,7 @@ public:
             ((grid & dhlp) << 12);
     }
     static Grid moveLeft(Board::Grid grid){
-        static std::array<uint16_t, 1 << 16> const table = Board::makeTable();
+        static std::array<uint16_t, 1 << 16> const table = Board::makeTable().first;
         return
             (static_cast<uint64_t>(table[(grid & UINT64_C(0xFFFF000000000000)) >> 48]) << 48) |
             (static_cast<uint64_t>(table[(grid & UINT64_C(0x0000FFFF00000000)) >> 32]) << 32) |
@@ -112,45 +112,20 @@ public:
                 return true;
         return false;
     }
+    static int popCount(int bits){
+	bits = (bits & 0x55555555) + (bits >> 1 & 0x55555555);
+	bits = (bits & 0x33333333) + (bits >> 2 & 0x33333333);
+	bits = (bits & 0x0f0f0f0f) + (bits >> 4 & 0x0f0f0f0f);
+	bits = (bits & 0x00ff00ff) + (bits >> 8 & 0x00ff00ff);
+	return (bits & 0x0000ffff) + (bits >>16 & 0x0000ffff);
+    }
     static int log2(int i){
-        switch(i){
-        case 0:
-            return 0;
-        case 2:
-            return 1;
-        case 4:
-            return 2;
-        case 8:
-            return 3;
-        case 16:
-            return 4;
-        case 32:
-            return 5;
-        case 64:
-            return 6;
-        case 128:
-            return 7;
-        case 256:
-            return 8;
-        case 512:
-            return 9;
-        case 1024:
-            return 10;
-        case 2048:
-            return 11;
-        case 4096:
-            return 12;
-        case 8192:
-            return 13;
-        case 16384:
-            return 14;
-        default:
-            return 15;
-        }
+	if(i == 0) return 0;	
+	return popCount((i & (-i)) - 1);
     }
     static int pow2(int i) {
-        static int const constexpr table[] = {0,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384};
-        return table[i];
+	if(i == 0) return 0;
+	return 1 << i;
     }
     static int countZeroGrid(Grid grid){
         grid = ((grid & UINT64_C(0xCCCCCCCCCCCCCCCC)) >> 2) | (grid & UINT64_C(0x3333333333333333));
@@ -162,7 +137,29 @@ public:
         grid = grid + (grid >> 8);
         return 16 - (grid & 0xFF);
     }
-    static std::array<uint16_t, 1 << 16> makeTable();
+    static std::pair<std::array<uint16_t, 1 << 16>, std::array<int, 1 << 16>> makeTable();
+    static int getScore(Grid grid, Dir dir){
+        static std::array<int, 1 << 16> const table = makeTable().second;
+        switch(dir){
+        case Dir::Left:
+            break;
+        case Dir::Right:
+            grid = Board::gridMirror(grid);
+            break;
+        case Dir::Up:
+            grid = Board::transpose(grid);
+            break;
+        case Dir::Down:
+        default:
+            grid = Board::gridMirror(Board::transpose(grid));
+            break;
+        }
+        return
+            table[(grid & UINT64_C(0xFFFF000000000000)) >> 48] +
+            table[(grid & UINT64_C(0x0000FFFF00000000)) >> 32] +
+            table[(grid & UINT64_C(0x00000000FFFF0000)) >> 16] +
+            table[(grid & UINT64_C(0x000000000000FFFF)) >> 00] ;
+    }
 private:
     std::string const endpoint;
     int fd;
