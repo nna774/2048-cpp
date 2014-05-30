@@ -6,3 +6,5 @@ out/*
 2048-ai
 *.gcda
 \#*\#
+
+test/gtest-1.7.0/
