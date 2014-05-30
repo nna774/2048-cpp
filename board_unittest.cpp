@@ -21,3 +21,23 @@ TEST(BoardTest, log2){
     EXPECT_EQ(15, Board::log2(32768));
     EXPECT_EQ(16, Board::log2(65536));
 }
+
+TEST(BoardTest, pow2){
+    EXPECT_EQ(0, Board::pow2(0));
+    EXPECT_EQ(2, Board::pow2(1));
+    EXPECT_EQ(4, Board::pow2(2));
+    EXPECT_EQ(8, Board::pow2(3));
+    EXPECT_EQ(16, Board::pow2(4));
+    EXPECT_EQ(32, Board::pow2(5));
+    EXPECT_EQ(64, Board::pow2(6));
+    EXPECT_EQ(128, Board::pow2(7));
+    EXPECT_EQ(256, Board::pow2(8));
+    EXPECT_EQ(512, Board::pow2(9));
+    EXPECT_EQ(1024, Board::pow2(10));
+    EXPECT_EQ(2048, Board::pow2(11));
+    EXPECT_EQ(4096, Board::pow2(12));
+    EXPECT_EQ(8192, Board::pow2(13));
+    EXPECT_EQ(16384, Board::pow2(14));
+    EXPECT_EQ(32768, Board::pow2(15));
+    EXPECT_EQ(65536, Board::pow2(16));
+}
