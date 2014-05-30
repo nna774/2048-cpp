@@ -165,9 +165,7 @@ private:
     int fd;
     std::string sessionID;
     std::random_device seed_gen;
-    int toDead(std::pair<bool,Grid>);
     static std::array<bool, 1 << 16> makeMovableTable();
     Grid grid;
-    static int moveUpImp(int);
 };
 
