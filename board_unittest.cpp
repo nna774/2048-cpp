@@ -53,7 +53,7 @@ TEST(BoardTest, gridMirrorIDRAND){
     auto ITERATION = 1000;
 
     for(int i(0); i < ITERATION; ++i){
-	int tmp = mt();
+	unsigned tmp = mt();
 	EXPECT_TRUE(tmp == Board::gridMirror( Board::gridMirror( tmp )));
     }
 }
