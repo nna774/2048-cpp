@@ -1,4 +1,5 @@
 *.o
+*.a
 a.out
 prof
 gmon.out
