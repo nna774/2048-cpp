@@ -113,19 +113,19 @@ public:
         return false;
     }
     static int popCount(int bits){
-	bits = (bits & 0x55555555) + (bits >> 1 & 0x55555555);
-	bits = (bits & 0x33333333) + (bits >> 2 & 0x33333333);
-	bits = (bits & 0x0f0f0f0f) + (bits >> 4 & 0x0f0f0f0f);
-	bits = (bits & 0x00ff00ff) + (bits >> 8 & 0x00ff00ff);
-	return (bits & 0x0000ffff) + (bits >>16 & 0x0000ffff);
+        bits = (bits & 0x55555555) + (bits >> 1 & 0x55555555);
+        bits = (bits & 0x33333333) + (bits >> 2 & 0x33333333);
+        bits = (bits & 0x0f0f0f0f) + (bits >> 4 & 0x0f0f0f0f);
+        bits = (bits & 0x00ff00ff) + (bits >> 8 & 0x00ff00ff);
+        return (bits & 0x0000ffff) + (bits >>16 & 0x0000ffff);
     }
     static int log2(int i){
-	if(i == 0) return 0;	
-	return popCount((i & (-i)) - 1);
+        if(i == 0) return 0;
+        return popCount((i & (-i)) - 1);
     }
     static int pow2(int i) {
-	if(i == 0) return 0;
-	return 1 << i;
+        if(i == 0) return 0;
+        return 1 << i;
     }
     static int countZeroGrid(Grid grid){
         grid = ((grid & UINT64_C(0xCCCCCCCCCCCCCCCC)) >> 2) | (grid & UINT64_C(0x3333333333333333));

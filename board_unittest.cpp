@@ -69,8 +69,10 @@ TEST(BoardTest, popCountRAND){
     auto ITERATION = 1000;
 
     for(int i(0); i < ITERATION; ++i){
-	unsigned tmp = mt();
-	EXPECT_EQ(__builtin_popcount(tmp) , Board::popCount(tmp) );
+        unsigned tmp = mt();
+        EXPECT_EQ(__builtin_popcount(tmp) , Board::popCount(tmp) );
     }
 #endif
 }
+
+

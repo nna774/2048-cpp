@@ -180,7 +180,7 @@ std::pair<std::array<uint16_t, 1 << 16>, std::array<int, 1 << 16>> Board::makeTa
         auto grid = orig;
         bool joined = false;
         bool hit = false;
-	int score = 0;
+        int score = 0;
         for(int i(0); i < 4; ++i){
             if(Board::get(grid, 0, i) == 0) continue;
             hit = false;
@@ -190,7 +190,7 @@ std::pair<std::array<uint16_t, 1 << 16>, std::array<int, 1 << 16>> Board::makeTa
                     auto const gotten = Board::get(grid, 0, j);
                     grid = Board::set(grid, 0, j, gotten == 0b1111 ? gotten : gotten + 1);
                     grid = Board::set(grid, 0, i, 0);
-		    score += pow2(gotten + 1);
+                    score += pow2(gotten + 1);
                     joined = true;
                 }else{
                     if(j + 1 != i){
@@ -208,7 +208,7 @@ std::pair<std::array<uint16_t, 1 << 16>, std::array<int, 1 << 16>> Board::makeTa
             }
         }
         table[orig] = grid;
-	scoreTable[orig] = score;
+        scoreTable[orig] = score;
     }
     return {table, scoreTable};
 }
