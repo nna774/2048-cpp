@@ -1,6 +1,7 @@
 #include <limits.h>
 #include "board.hpp"
 #include "gtest/gtest.h"
+#include <random>
 
 TEST(BoardTest, log2){
     EXPECT_EQ(0, Board::log2(0));
@@ -40,4 +41,36 @@ TEST(BoardTest, pow2){
     EXPECT_EQ(16384, Board::pow2(14));
     EXPECT_EQ(32768, Board::pow2(15));
     EXPECT_EQ(65536, Board::pow2(16));
+}
+
+TEST(BoardTest, gridMirrorIDRAND){
+    static std::random_device rnd;
+    std::vector<std::uint_least32_t> v(10);
+    for(auto& e: v) e = rnd();
+    std::seed_seq seq(begin(v), end(v));
+    std::mt19937 mt(seq);
+
+    auto ITERATION = 1000;
+
+    for(int i(0); i < ITERATION; ++i){
+	int tmp = mt();
+	EXPECT_TRUE(tmp == Board::gridMirror( Board::gridMirror( tmp )));
+    }
+}
+
+TEST(BoardTest, popCountRAND){
+#ifdef __GNUC__
+    static std::random_device rnd;
+    std::vector<std::uint_least32_t> v(10);
+    for(auto& e: v) e = rnd();
+    std::seed_seq seq(begin(v), end(v));
+    std::mt19937 mt(seq);
+
+    auto ITERATION = 1000;
+
+    for(int i(0); i < ITERATION; ++i){
+	unsigned tmp = mt();
+	EXPECT_EQ(__builtin_popcount(tmp) , Board::popCount(tmp) );
+    }
+#endif
 }
