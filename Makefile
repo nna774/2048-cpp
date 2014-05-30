@@ -7,6 +7,8 @@ SRC = main.o board.o koyone.o koyoneNext.o kihime.o nona7.o
 OUTNAME = 2048-ai
 ITERATION = 3
 
+.PHONY: test all clean
+
 all: $(SRC)
 	$(CXX) $(OPT) $(SRC) -o $(OUTNAME)
 
@@ -24,11 +26,11 @@ nona7.o: nona7.cpp nona7.hpp
 clean:
 	rm -f *.o $(OUTNAME) *.gcda gmon.out 
 
-test:
-	echo do nothing
-
 release:
 	rm -f *.gcda
 	$(CXX) $(OPT) $(PROFILE) --std=c++11 -Wall -Wextra main.cpp board.cpp koyone.cpp koyoneNext.cpp kihime.cpp nona7.cpp -o $(OUTNAME)
 	for i in `seq 1 $(ITERATION)`; do echo Stage $i; ./$(OUTNAME); done
 	$(CXX) $(OPT) $(RELEASE) --std=c++11 -Wall -Wextra main.cpp board.cpp koyone.cpp koyoneNext.cpp kihime.cpp nona7.cpp -o $(OUTNAME)
+
+test:
+	cd test; make clean; make test
