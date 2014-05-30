@@ -184,7 +184,7 @@ std::pair<std::array<uint16_t, 1 << 16>, std::array<int, 1 << 16>> Board::makeTa
         for(int i(0); i < 4; ++i){
             if(Board::get(grid, 0, i) == 0) continue;
             hit = false;
-            for(int j(i-1); j >= 0;--j){
+            for(int j(i-1); j >= 0; --j){
                 if(Board::get(grid, 0, j) == 0) continue;
                 if(Board::get(grid, 0, j) == Board::get(grid, 0, i) && !joined){
                     auto const gotten = Board::get(grid, 0, j);
