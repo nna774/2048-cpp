@@ -1,5 +1,5 @@
 #include <limits.h>
-#include "board.hpp"
+#include "../board.hpp"
 #include "gtest/gtest.h"
 #include <random>
 

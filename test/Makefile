@@ -1,5 +1,6 @@
 GTEST_DIR = gtest-1.7.0
 USER_DIR = ..
+TESTSRC_DIR = .
 CPPFLAGS += -isystem $(GTEST_DIR)/include
 CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
@@ -7,12 +8,10 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 all: test
 
 gtest-all.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c \
-            $(GTEST_DIR)/src/gtest-all.cc
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c $(GTEST_DIR)/src/gtest-all.cc
 
 gtest_main.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c \
-            $(GTEST_DIR)/src/gtest_main.cc
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c $(GTEST_DIR)/src/gtest_main.cc
 
 gtest.a : gtest-all.o
 	$(AR) $(ARFLAGS) $@ $^
@@ -40,8 +39,8 @@ kihime.o : $(MINE) $(GTEST_HEADERS)
 nona7.o : $(MINE) $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/nona7.cpp
 
-board_unittest.o : $(USER_DIR)/board_unittest.cpp $(USER_DIR)/board.hpp $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/board_unittest.cpp
+board_unittest.o : $(TESTSRC_DIR)/board_unittest.cpp $(USER_DIR)/board.hpp $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TESTSRC_DIR)/board_unittest.cpp
 
 board_unittest : $(MINE_O) board_unittest.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
