@@ -86,3 +86,16 @@ TEST(BoardTest, popCountRAND){
 #endif
 }
 
+TEST(BoardTest, movableMovedRAND){
+    static std::random_device rnd;
+    std::vector<std::uint_least32_t> v(10);
+    for(auto& e: v) e = rnd();
+    std::seed_seq seq(begin(v), end(v));
+    std::mt19937 mt(seq);
+
+    for(int i(0); i < ITERATION; ++i){
+	Board::Grid grid = mt();
+	Dir dir = allDirs[mt()% 4];
+        EXPECT_EQ(grid != Board::moved(grid, dir), Board::movable(grid, dir));
+    }
+}
