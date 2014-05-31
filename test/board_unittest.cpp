@@ -53,8 +53,8 @@ TEST(BoardTest, gridMirrorIDRAND){
     std::mt19937 mt(seq);
 
     for(int i(0); i < ITERATION; ++i){
-	unsigned tmp = mt();
-	EXPECT_TRUE(tmp == Board::gridMirror( Board::gridMirror( tmp )));
+	Board::Grid grid = mt();
+	EXPECT_TRUE(grid == Board::gridMirror( Board::gridMirror( grid )));
     }
 }
 
@@ -66,8 +66,8 @@ TEST(BoardTest, transposeIDRAND){
     std::mt19937 mt(seq);
 
     for(int i(0); i < ITERATION; ++i){
-	unsigned tmp = mt();
-	EXPECT_TRUE(tmp == Board::transpose( Board::transpose( tmp )));
+	Board::Grid grid = mt();
+	EXPECT_TRUE(grid == Board::transpose( Board::transpose( grid )));
     }
 }
 
@@ -80,8 +80,8 @@ TEST(BoardTest, popCountRAND){
     std::mt19937 mt(seq);
 
     for(int i(0); i < ITERATION; ++i){
-        unsigned tmp = mt();
-        EXPECT_EQ(__builtin_popcount(tmp) , Board::popCount(tmp) );
+	Board::Grid grid = mt();
+        EXPECT_EQ(__builtin_popcount(grid) , Board::popCount(grid) );
     }
 #endif
 }
