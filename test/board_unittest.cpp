@@ -3,6 +3,8 @@
 #include "gtest/gtest.h"
 #include <random>
 
+#define ITERATION 1000
+
 TEST(BoardTest, log2){
     EXPECT_EQ(0, Board::log2(0));
     EXPECT_EQ(1, Board::log2(2));
@@ -50,11 +52,22 @@ TEST(BoardTest, gridMirrorIDRAND){
     std::seed_seq seq(begin(v), end(v));
     std::mt19937 mt(seq);
 
-    auto ITERATION = 1000;
-
     for(int i(0); i < ITERATION; ++i){
 	unsigned tmp = mt();
 	EXPECT_TRUE(tmp == Board::gridMirror( Board::gridMirror( tmp )));
+    }
+}
+
+TEST(BoardTest, transposeIDRAND){
+    static std::random_device rnd;
+    std::vector<std::uint_least32_t> v(10);
+    for(auto& e: v) e = rnd();
+    std::seed_seq seq(begin(v), end(v));
+    std::mt19937 mt(seq);
+
+    for(int i(0); i < ITERATION; ++i){
+	unsigned tmp = mt();
+	EXPECT_TRUE(tmp == Board::transpose( Board::transpose( tmp )));
     }
 }
 
@@ -66,13 +79,10 @@ TEST(BoardTest, popCountRAND){
     std::seed_seq seq(begin(v), end(v));
     std::mt19937 mt(seq);
 
-    auto ITERATION = 1000;
-
     for(int i(0); i < ITERATION; ++i){
         unsigned tmp = mt();
         EXPECT_EQ(__builtin_popcount(tmp) , Board::popCount(tmp) );
     }
 #endif
 }
-
 
