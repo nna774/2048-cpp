@@ -24,7 +24,8 @@ kihime.o: kihime.cpp kihime.hpp
 nona7.o: nona7.cpp nona7.hpp
 
 clean:
-	rm -f *.o $(OUTNAME) *.gcda gmon.out 
+	rm -f *.o $(OUTNAME) *.gcda gmon.out
+	cd test; make clean
 
 release:
 	rm -f *.gcda
