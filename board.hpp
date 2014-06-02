@@ -21,13 +21,6 @@ int constexpr dirToInt(Dir dir){
 
 static std::array<Dir,4> const constexpr allDirs = {{ Dir::Up, Dir::Right, Dir::Down, Dir::Left }};
 
-Dir constexpr mirror(Dir dir){
-    /* if (dir == Dir::Up || dir == Dir::Down) return dir;
-     * if (dir == Dir::Left) return Dir::Right;
-     * if (dir == Dir::Right) return Dir::Left; */
-    return (dir == Dir::Up || dir == Dir::Down) ? dir : (dir == Dir::Left) ? Dir::Right : Dir::Left;
-}
-
 class Board{
 public:
     Board();
