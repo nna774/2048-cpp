@@ -12,6 +12,7 @@
 #include "koyone.hpp"
 #include "koyoneNext.hpp"
 #include "kihime.hpp"
+#include "kihimeNext.hpp"
 #include "nona7.hpp"
 
 Board::Board(){
@@ -221,8 +222,9 @@ std::array<bool, 1 << 16> Board::makeMovableTable(){
     return mTable;
 }
 
-template Dir Board::decideDir<Kihime>();
 template Dir Board::decideDir<Koyone>();
 template Dir Board::decideDir<KoyoneNext>();
+template Dir Board::decideDir<Kihime>();
+template Dir Board::decideDir<KihimeNext>();
 template Dir Board::decideDir<Nona7>();
 

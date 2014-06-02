@@ -1,9 +1,10 @@
 #include <iostream>
 #include "board.hpp"
 
-#include "kihime.hpp"
 #include "koyone.hpp"
 #include "koyoneNext.hpp"
+#include "kihime.hpp"
+#include "kihimeNext.hpp"
 #include "nona7.hpp"
 
 
