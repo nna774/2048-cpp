@@ -1,15 +1,8 @@
 #include "kihimeNext.hpp"
+#include "kihime.hpp"
 
 std::random_device KihimeNext::rnd;
-std::mt19937 KihimeNext::mt = KihimeNext::mtInit();
-
-std::mt19937 KihimeNext::mtInit(){
-    std::vector<std::uint_least32_t> v(10);
-    for(auto& e: v) e = rnd();
-    std::seed_seq seq(begin(v), end(v));
-    std::mt19937 mt(seq);
-    return mt;
-}
+std::mt19937 KihimeNext::mt = Kihime::mtInit();
 
 Dir KihimeNext::decideDir(){
     std::array<unsigned int, 4> cnt, depths;
