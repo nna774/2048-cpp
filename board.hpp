@@ -98,7 +98,33 @@ public:
             movableTable[(grid & UINT64_C(0x00000000FFFF0000)) >> 16] |
             movableTable[(grid & UINT64_C(0x000000000000FFFF)) >> 00] ;
     }
-    static std::pair<bool,Grid> movedAndBirth(Grid, Dir);
+    static std::mt19937 mtInit(){
+        std::vector<std::uint_least32_t> v(10);
+        static std::random_device rnd;
+        for(auto& e: v) e = rnd();
+        std::seed_seq seq(begin(v), end(v));
+        std::mt19937 mt(seq);
+        return mt;
+    }
+    static std::pair<bool,Grid> moveAndBirth(Board::Grid grid, Dir dir){
+        static std::mt19937 mt = mtInit();
+
+        auto moved = Board::moved(grid, dir);
+        int zeros = Board::countZeroGrid(grid);
+        bool flg(false);
+        if(zeros > 0){
+	    flg = true;
+            int point = mt() % zeros;
+            int birth(0);
+            if(mt() % 10) birth = 1;
+            else birth = 2;
+            for(int i(0); i < 4; ++i)
+                for(int j(0); j < 4; ++j)
+                    if(Board::get(moved, i, j) == 0)
+                        if(point-- == 0) moved = Board::set(moved, i, j, birth);
+        }
+        return {flg, moved};
+    }
     static bool alive(Board::Grid grid) {
         for(int i(0); i < 4; ++i)
             if(movable(grid, allDirs[i]))

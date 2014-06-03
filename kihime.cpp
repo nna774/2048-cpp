@@ -55,26 +55,9 @@ int Kihime::toDead(Board::Grid grid, int depth) {
     if(Board::alive(grid)){
         auto dir = allDirs[mt()%4];
         while(! Board::movable(grid, dir)) dir = allDirs[mt()%4];
-        auto moved = moveAndBirth(grid, dir);
+        auto moved = Board::moveAndBirth(grid, dir).second;
         return toDead(moved, depth + 1);
     }
     return depth;
 }
 
-inline Board::Grid Kihime::moveAndBirth(Board::Grid grid, Dir dir){
-    auto moved = Board::moved(grid, dir);
-    int zeros = Board::countZeroGrid(grid);
-    if(zeros > 0){
-        int point = mt() % zeros;
-        int birth(0);
-        if(mt() % 10) birth = 1;
-        else birth = 2;
-        for(int i(0); i < 4; ++i)
-            for(int j(0); j < 4; ++j)
-                if(Board::get(moved, i, j) == 0)
-                    if(point-- == 0) moved = Board::set(moved, i, j, birth);
-    }else{
-        // 動けなかった時だけだと思う
-    }
-    return moved;
-}
