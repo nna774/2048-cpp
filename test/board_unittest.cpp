@@ -99,3 +99,21 @@ TEST(BoardTest, movableMovedRAND){
         EXPECT_EQ(grid != Board::moved(grid, dir), Board::movable(grid, dir));
     }
 }
+
+TEST(BoardTest, countZeroGridRAND){
+    static std::random_device rnd;
+    std::vector<std::uint_least32_t> v(10);
+    for(auto& e: v) e = rnd();
+    std::seed_seq seq(begin(v), end(v));
+    std::mt19937 mt(seq);
+
+    for(int i(0); i < ITERATION; ++i){
+        Board::Grid grid = mt();
+        int zeros = 0;
+        for(int i(0); i < 4; ++i)
+            for(int j(0); j < 4; ++j)
+                if(Board::get(grid, i, j) == 0) ++ zeros;
+        
+        EXPECT_EQ(zeros, Board::countZeroGrid(grid));
+    }
+}
