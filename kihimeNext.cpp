@@ -49,7 +49,7 @@ unsigned KihimeNext::toDead(Board::Grid grid, unsigned score) {
 
     Dir dir = allDirs[mt()%4];
     while(! Board::movable(grid, dir)) dir = allDirs[mt()%4];
-    Board::Grid moved = moveAndBirth(grid, dir);
+    Board::Grid moved = Board::moveAndBirth(grid, dir).second;
     return toDead(moved, score + Board::getScore(grid, dir));
 }
 

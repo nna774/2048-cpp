@@ -18,6 +18,5 @@ private:
     static int const constexpr ITERATION = 5000;
     static int const constexpr DANGER = 10;
     static int toDead(Board::Grid, int);
-    static Board::Grid moveAndBirth(Board::Grid, Dir);
 };
 
