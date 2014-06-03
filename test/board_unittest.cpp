@@ -117,3 +117,4 @@ TEST(BoardTest, countZeroGridRAND){
         EXPECT_EQ(zeros, Board::countZeroGrid(grid));
     }
 }
+
