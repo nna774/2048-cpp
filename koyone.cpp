@@ -61,18 +61,6 @@ Dir Koyone::decideDir() const{
     return (std::max_element(std::begin(top), std::end(top), CompStatic()))->second;
 }
 
-int Koyone::staticEval(Board::Grid grid){
-    int sum(0);
-    for(int i(0); i < 4; ++i)
-        for(int j(0); j < 4; ++j){
-            auto get = Board::get(grid, i, j);
-            sum += get
-                ? Board::pow2(get) * get
-                : SPACE_WEIGHT;
-        }
-    return sum;
-}
-
 bool Koyone::nurseryTime(Board::Grid grid){
     for(int i(0); i < 4;++i)
         for(int j(0); j < 4;++j)
