@@ -5,9 +5,9 @@ std::random_device KihimeNext::rnd;
 std::mt19937 KihimeNext::mt = Kihime::mtInit();
 
 Dir KihimeNext::decideDir(){
-    std::array<unsigned int, 4> cnt, depths;
+    std::array<unsigned int, 4> cnt, scores;
     cnt.fill(0);
-    depths.fill(0);
+    scores.fill(0);
     std::array<double, 4> aves;
     aves.fill(0);
     Dir max = Dir::Up;
@@ -19,8 +19,8 @@ label:;
         Dir dir = allDirs[mt()%4];
         while(! Board::movable(grid, dir)) dir = allDirs[mt()%4];
         auto moved = Board::moved(grid, dir);
-        unsigned depth = toDead(moved, 0);
-        depths[dirToInt(dir)] += depth;
+        unsigned score = toDead(moved, 0);
+        scores[dirToInt(dir)] += score;
         ++cnt[dirToInt(dir)];
     }
     for(int i(0); i < 4; ++i){
@@ -28,7 +28,7 @@ label:;
             aves[i] = 0;
             continue;
         }
-        aves[i] = depths[i] / (cnt[i] * 1.0);
+        aves[i] = scores[i] / (cnt[i] * 1.0);
     }
     for(int i(0); i < 4; ++i){
         if(aves[i] > maxAve){
@@ -44,14 +44,13 @@ label:;
     return max;
 }
 
-int KihimeNext::toDead(Board::Grid grid, int depth) {
-    if(Board::alive(grid)){
-        auto dir = allDirs[mt()%4];
-        while(! Board::movable(grid, dir)) dir = allDirs[mt()%4];
-        auto moved = moveAndBirth(grid, dir);
-        return toDead(moved, depth + 1);
-    }
-    return depth;
+unsigned KihimeNext::toDead(Board::Grid grid, unsigned score) {
+    if(! Board::alive(grid)) return score;
+
+    Dir dir = allDirs[mt()%4];
+    while(! Board::movable(grid, dir)) dir = allDirs[mt()%4];
+    Board::Grid moved = moveAndBirth(grid, dir);
+    return toDead(moved, score + Board::getScore(grid, dir));
 }
 
 inline Board::Grid KihimeNext::moveAndBirth(Board::Grid grid, Dir dir){
