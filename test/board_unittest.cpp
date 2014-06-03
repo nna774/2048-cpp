@@ -53,8 +53,8 @@ TEST(BoardTest, gridMirrorIDRAND){
     std::mt19937 mt(seq);
 
     for(int i(0); i < ITERATION; ++i){
-	Board::Grid grid = mt();
-	EXPECT_TRUE(grid == Board::gridMirror( Board::gridMirror( grid )));
+        Board::Grid grid = mt();
+        EXPECT_TRUE(grid == Board::gridMirror( Board::gridMirror( grid )));
     }
 }
 
@@ -66,8 +66,8 @@ TEST(BoardTest, transposeIDRAND){
     std::mt19937 mt(seq);
 
     for(int i(0); i < ITERATION; ++i){
-	Board::Grid grid = mt();
-	EXPECT_TRUE(grid == Board::transpose( Board::transpose( grid )));
+        Board::Grid grid = mt();
+        EXPECT_TRUE(grid == Board::transpose( Board::transpose( grid )));
     }
 }
 
@@ -80,7 +80,7 @@ TEST(BoardTest, popCountRAND){
     std::mt19937 mt(seq);
 
     for(int i(0); i < ITERATION; ++i){
-	Board::Grid grid = mt();
+        Board::Grid grid = mt();
         EXPECT_EQ(__builtin_popcount(grid) , Board::popCount(grid) );
     }
 #endif
@@ -94,8 +94,8 @@ TEST(BoardTest, movableMovedRAND){
     std::mt19937 mt(seq);
 
     for(int i(0); i < ITERATION; ++i){
-	Board::Grid grid = mt();
-	Dir dir = allDirs[mt()% 4];
+        Board::Grid grid = mt();
+        Dir dir = allDirs[mt()% 4];
         EXPECT_EQ(grid != Board::moved(grid, dir), Board::movable(grid, dir));
     }
 }
