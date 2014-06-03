@@ -42,13 +42,13 @@ kihimeNext.o : $(MINE) $(GTEST_HEADERS)
 nona7.o : $(MINE) $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/nona7.cpp
 
-board_unittest.o : $(TESTSRC_DIR)/board_unittest.cpp $(USER_DIR)/board.hpp $(GTEST_HEADERS)
+board_unittest.o :  $(TESTSRC_DIR)/test.hpp $(TESTSRC_DIR)/board_unittest.cpp $(USER_DIR)/board.hpp $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TESTSRC_DIR)/board_unittest.cpp
 
 board_unittest : $(MINE_O) board_unittest.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
-koyone_unittest.o : $(TESTSRC_DIR)/koyone_unittest.cpp $(USER_DIR)/koyone.hpp $(GTEST_HEADERS)
+koyone_unittest.o : $(TESTSRC_DIR)/test.hpp $(TESTSRC_DIR)/koyone_unittest.cpp $(USER_DIR)/koyone.hpp $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TESTSRC_DIR)/koyone_unittest.cpp
 
 koyone_unittest : $(MINE_O) koyone_unittest.o gtest_main.a

@@ -2,16 +2,12 @@
 #include "../board.hpp"
 #include "../koyone.hpp"
 #include "gtest/gtest.h"
-#include <random>
+#include "test.hpp"
 
 #define ITERATION 10000000
 
 TEST(KoyoneTest, staticEvalRAND){
-    static std::random_device rnd;
-    std::vector<std::uint_least32_t> v(10);
-    for(auto& e: v) e = rnd();
-    std::seed_seq seq(begin(v), end(v));
-    std::mt19937 mt(seq);
+    std::mt19937 mt = test::mtInit();
 
     for(int i(0); i < ITERATION; ++i){
         Board::Grid grid = mt();

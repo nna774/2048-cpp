@@ -1,7 +1,7 @@
 #include <limits.h>
 #include "../board.hpp"
 #include "gtest/gtest.h"
-#include <random>
+#include "test.hpp"
 
 #define ITERATION 10000000
 
@@ -46,11 +46,7 @@ TEST(BoardTest, pow2){
 }
 
 TEST(BoardTest, gridMirrorIDRAND){
-    static std::random_device rnd;
-    std::vector<std::uint_least32_t> v(10);
-    for(auto& e: v) e = rnd();
-    std::seed_seq seq(begin(v), end(v));
-    std::mt19937 mt(seq);
+    std::mt19937 mt = test::mtInit();
 
     for(int i(0); i < ITERATION; ++i){
         Board::Grid grid = mt();
@@ -59,11 +55,7 @@ TEST(BoardTest, gridMirrorIDRAND){
 }
 
 TEST(BoardTest, transposeIDRAND){
-    static std::random_device rnd;
-    std::vector<std::uint_least32_t> v(10);
-    for(auto& e: v) e = rnd();
-    std::seed_seq seq(begin(v), end(v));
-    std::mt19937 mt(seq);
+    std::mt19937 mt = test::mtInit();
 
     for(int i(0); i < ITERATION; ++i){
         Board::Grid grid = mt();
@@ -73,11 +65,7 @@ TEST(BoardTest, transposeIDRAND){
 
 TEST(BoardTest, popCountRAND){
 #ifdef __GNUC__
-    static std::random_device rnd;
-    std::vector<std::uint_least32_t> v(10);
-    for(auto& e: v) e = rnd();
-    std::seed_seq seq(begin(v), end(v));
-    std::mt19937 mt(seq);
+    std::mt19937 mt = test::mtInit();
 
     for(int i(0); i < ITERATION; ++i){
         Board::Grid grid = mt();
@@ -87,11 +75,7 @@ TEST(BoardTest, popCountRAND){
 }
 
 TEST(BoardTest, movableMovedRAND){
-    static std::random_device rnd;
-    std::vector<std::uint_least32_t> v(10);
-    for(auto& e: v) e = rnd();
-    std::seed_seq seq(begin(v), end(v));
-    std::mt19937 mt(seq);
+    std::mt19937 mt = test::mtInit();
 
     for(int i(0); i < ITERATION; ++i){
         Board::Grid grid = mt();
@@ -101,11 +85,7 @@ TEST(BoardTest, movableMovedRAND){
 }
 
 TEST(BoardTest, countZeroGridRAND){
-    static std::random_device rnd;
-    std::vector<std::uint_least32_t> v(10);
-    for(auto& e: v) e = rnd();
-    std::seed_seq seq(begin(v), end(v));
-    std::mt19937 mt(seq);
+    std::mt19937 mt = test::mtInit();
 
     for(int i(0); i < ITERATION; ++i){
         Board::Grid grid = mt();
