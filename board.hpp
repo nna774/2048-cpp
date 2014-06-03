@@ -113,7 +113,7 @@ public:
         int zeros = Board::countZeroGrid(grid);
         bool flg(false);
         if(zeros > 0){
-	    flg = true;
+            flg = true;
             int point = mt() % zeros;
             int birth(0);
             if(mt() % 10) birth = 1;
