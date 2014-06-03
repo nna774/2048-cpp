@@ -3,7 +3,7 @@
 #include "gtest/gtest.h"
 #include <random>
 
-#define ITERATION 1000
+#define ITERATION 10000000
 
 TEST(BoardTest, log2){
     EXPECT_EQ(0, Board::log2(0));

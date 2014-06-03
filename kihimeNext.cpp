@@ -53,20 +53,3 @@ unsigned KihimeNext::toDead(Board::Grid grid, unsigned score) {
     return toDead(moved, score + Board::getScore(grid, dir));
 }
 
-inline Board::Grid KihimeNext::moveAndBirth(Board::Grid grid, Dir dir){
-    auto moved = Board::moved(grid, dir);
-    int zeros = Board::countZeroGrid(grid);
-    if(zeros > 0){
-        int point = mt() % zeros;
-        int birth(0);
-        if(mt() % 10) birth = 1;
-        else birth = 2;
-        for(int i(0); i < 4; ++i)
-            for(int j(0); j < 4; ++j)
-                if(Board::get(moved, i, j) == 0)
-                    if(point-- == 0) moved = Board::set(moved, i, j, birth);
-    }else{
-        // 動けなかった時だけだと思う
-    }
-    return moved;
-}
