@@ -99,3 +99,17 @@ Koyone::GridList Koyone::nextPossibleWorldLeft(Board::Grid grid){
             }
     return tmps;
 }
+std::array<int, 1 << 16> Koyone::makeTable(){
+    std::array<int, 1 << 16> table;
+    for(unsigned grid(0); grid < 1 << 16; ++grid){
+        int sum(0);
+        for(int j(0); j < 4; ++j){
+            auto gotten = Board::get(grid, 0, j);
+            sum += gotten
+                ? Board::pow2(gotten) * gotten
+                : SPACE_WEIGHT;
+        }
+        table[grid] = sum;
+    }
+    return table;
+}

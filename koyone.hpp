@@ -1,6 +1,7 @@
 #pragma once
 
 #include <random>
+#include <array>
 
 #include "board.hpp"
 
@@ -12,16 +13,14 @@ public:
     using Grid = Board::Grid;
     static int const constexpr MATURED = 10;
     static int const constexpr SPACE_WEIGHT = 500;
+    static std::array<int, 1 << 16> makeTable();
     static int staticEval(Board::Grid grid){
-        int sum(0);
-        for(int i(0); i < 4; ++i)
-            for(int j(0); j < 4; ++j){
-                auto gotten = Board::get(grid, i, j);
-                sum += gotten
-                    ? Board::pow2(gotten) * gotten
-                    : SPACE_WEIGHT;
-            }
-        return sum;
+        static std::array<int, 1 << 16> const table = makeTable();
+        return
+            table[(grid & UINT64_C(0xFFFF000000000000)) >> 48] +
+            table[(grid & UINT64_C(0x0000FFFF00000000)) >> 32] +
+            table[(grid & UINT64_C(0x00000000FFFF0000)) >> 16] +
+            table[(grid & UINT64_C(0x000000000000FFFF)) >> 00] ;
     }
     static bool nurseryTime(Grid);
     struct CompStatic{
