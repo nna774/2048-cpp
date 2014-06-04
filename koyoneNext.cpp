@@ -1,19 +1,5 @@
 #include "koyoneNext.hpp"
 
-inline Koyone::GridMap KoyoneNext::iterarion(Koyone::GridMap&& map, int ITERATION){
-    Koyone::GridMap npws[ITERATION];
-    npws[0] = map;
-    for(int i(0); i < ITERATION - 1; ++i){
-        npws[i+1].reserve(npws[i].size());
-        for(auto const& e: npws[i]){
-            for(auto const& e2: nextPossibleWorld(e.first))
-                npws[i+1].emplace_back(e2.first, e.second);
-        }
-        if(npws[i+1].empty()) return npws[i];
-    }
-    return npws[ITERATION - 1];
-}
-
 Dir KoyoneNext::decideDir() const{
     using std::make_pair;
     int const ITERATION = Koyone::nurseryTime(grid) ? 4 : 10;
