@@ -1,9 +1,10 @@
 #include "koyoneNext.hpp"
 
+#include <map>
+
 Dir KoyoneNext::decideDir() const{
     using std::make_pair;
-    int const ITERATION = Koyone::nurseryTime(grid) ? 4 : 10;
-    Koyone::GridMap top = iterarion(nextPossibleWorld(grid), ITERATION);
+    Koyone::GridMap top =  Koyone::nurseryTime(grid) ? iterarion(nextPossibleWorld(grid), 4) : nextPossibleWorld10(grid);
     if(top.size() < DANGER){
         Koyone::uniq(top);
         int const ITERATION = 5;
@@ -23,6 +24,105 @@ Koyone::GridMap KoyoneNext::nextPossibleWorld(Board::Grid grid){
     Koyone::GridList up = nextPossibleWorldLeft(Board::transpose(grid));
     for(auto e: up) map.emplace_back(Board::transpose(e), Dir::Up);
     return map;
+}
+
+Koyone::GridMap KoyoneNext::nextPossibleWorld2(Board::Grid grid){
+    static std::map<Board::Grid, Koyone::GridMap> map;
+    if(map.find(grid) != std::end(map)) return map[grid];
+    Koyone::GridMap npws;
+    for(auto const& e: nextPossibleWorld(grid)){
+        for(auto const& e2: nextPossibleWorld(e.first))
+            npws.emplace_back(e2.first, e.second);
+    }
+    return map[grid] = npws;
+}
+
+Koyone::GridMap KoyoneNext::nextPossibleWorld3(Board::Grid grid){
+    static std::map<Board::Grid, Koyone::GridMap> map;
+    if(map.find(grid) != std::end(map)) return map[grid];
+    Koyone::GridMap npws;
+    for(auto const& e: nextPossibleWorld(grid)){
+        for(auto const& e2: nextPossibleWorld2(e.first))
+            npws.emplace_back(e2.first, e.second);
+    }
+    return map[grid] = npws;
+}
+
+Koyone::GridMap KoyoneNext::nextPossibleWorld4(Board::Grid grid){
+    static std::map<Board::Grid, Koyone::GridMap> map;
+    if(map.find(grid) != std::end(map)) return map[grid];
+    Koyone::GridMap npws;
+    for(auto const& e: nextPossibleWorld(grid)){
+        for(auto const& e2: nextPossibleWorld3(e.first))
+            npws.emplace_back(e2.first, e.second);
+    }
+    return map[grid] = npws;
+}
+
+Koyone::GridMap KoyoneNext::nextPossibleWorld5(Board::Grid grid){
+    static std::map<Board::Grid, Koyone::GridMap> map;
+    if(map.find(grid) != std::end(map)) return map[grid];
+    Koyone::GridMap npws;
+    for(auto const& e: nextPossibleWorld(grid)){
+        for(auto const& e2: nextPossibleWorld4(e.first))
+            npws.emplace_back(e2.first, e.second);
+    }
+    return map[grid] = npws;
+}
+
+Koyone::GridMap KoyoneNext::nextPossibleWorld6(Board::Grid grid){
+    static std::map<Board::Grid, Koyone::GridMap> map;
+    if(map.find(grid) != std::end(map)) return map[grid];
+    Koyone::GridMap npws;
+    for(auto const& e: nextPossibleWorld(grid)){
+        for(auto const& e2: nextPossibleWorld5(e.first))
+            npws.emplace_back(e2.first, e.second);
+    }
+    return map[grid] = npws;
+}
+
+Koyone::GridMap KoyoneNext::nextPossibleWorld7(Board::Grid grid){
+    static std::map<Board::Grid, Koyone::GridMap> map;
+    if(map.find(grid) != std::end(map)) return map[grid];
+    Koyone::GridMap npws;
+    for(auto const& e: nextPossibleWorld(grid)){
+        for(auto const& e2: nextPossibleWorld6(e.first))
+            npws.emplace_back(e2.first, e.second);
+    }
+    return map[grid] = npws;
+}
+
+Koyone::GridMap KoyoneNext::nextPossibleWorld8(Board::Grid grid){
+    static std::map<Board::Grid, Koyone::GridMap> map;
+    if(map.find(grid) != std::end(map)) return map[grid];
+    Koyone::GridMap npws;
+    for(auto const& e: nextPossibleWorld(grid)){
+        for(auto const& e2: nextPossibleWorld7(e.first))
+            npws.emplace_back(e2.first, e.second);
+    }
+    return map[grid] = npws;
+}
+
+Koyone::GridMap KoyoneNext::nextPossibleWorld9(Board::Grid grid){
+    static std::map<Board::Grid, Koyone::GridMap> map;
+    if(map.find(grid) != std::end(map)) return map[grid];
+    Koyone::GridMap npws;
+    for(auto const& e: nextPossibleWorld(grid)){
+        for(auto const& e2: nextPossibleWorld8(e.first))
+            npws.emplace_back(e2.first, e.second);
+    }
+    return map[grid] = npws;
+}
+
+Koyone::GridMap KoyoneNext::nextPossibleWorld10(Board::Grid grid){
+    static std::map<Board::Grid, Koyone::GridMap> map;
+    if(map.find(grid) != std::end(map)) return map[grid];
+    Koyone::GridMap npws;
+    for(auto const& e: nextPossibleWorld(grid)){
+        for(auto const& e2: nextPossibleWorld9(e.first))
+            npws.emplace_back(e2.first, e.second);
+    }
+    return map[grid] = npws;
 }
 
 inline Koyone::GridList KoyoneNext::nextPossibleWorldLeft(Board::Grid grid){

@@ -20,6 +20,15 @@ public:
         return npws[ITERATION - 1];
     }
     static Koyone::GridMap nextPossibleWorld(Board::Grid);
+    static Koyone::GridMap nextPossibleWorld2(Board::Grid);
+    static Koyone::GridMap nextPossibleWorld3(Board::Grid);
+    static Koyone::GridMap nextPossibleWorld4(Board::Grid);
+    static Koyone::GridMap nextPossibleWorld5(Board::Grid);
+    static Koyone::GridMap nextPossibleWorld6(Board::Grid);
+    static Koyone::GridMap nextPossibleWorld7(Board::Grid);
+    static Koyone::GridMap nextPossibleWorld8(Board::Grid);
+    static Koyone::GridMap nextPossibleWorld9(Board::Grid);
+    static Koyone::GridMap nextPossibleWorld10(Board::Grid);
 private:
     Board::Grid grid;
     static unsigned int const constexpr DANGER = 30000;
