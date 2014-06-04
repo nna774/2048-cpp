@@ -12,7 +12,7 @@ Dir KoyoneNext::decideDir() const{
     return (std::max_element(std::begin(top), std::end(top), Koyone::CompStatic()))->second;
 }
 
-inline Koyone::GridMap KoyoneNext::nextPossibleWorld(Board::Grid grid){
+Koyone::GridMap KoyoneNext::nextPossibleWorld(Board::Grid grid){
     Koyone::GridMap map;
     Koyone::GridList lefts = nextPossibleWorldLeft(grid);
     for(auto e: lefts) map.emplace_back(e, Dir::Left);

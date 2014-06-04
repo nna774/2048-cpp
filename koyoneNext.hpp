@@ -19,10 +19,10 @@ public:
         }
         return npws[ITERATION - 1];
     }
+    static Koyone::GridMap nextPossibleWorld(Board::Grid);
 private:
     Board::Grid grid;
     static unsigned int const constexpr DANGER = 30000;
-    static Koyone::GridMap nextPossibleWorld(Board::Grid);
     static Koyone::GridList nextPossibleWorldLeft(Board::Grid);
 };
 
