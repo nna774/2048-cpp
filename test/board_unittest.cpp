@@ -81,6 +81,20 @@ TEST(BoardTest, flipVIDRAND){
     }
 }
 
+TEST(BoardTest, flipV0to15){
+    int xs[] = {
+	12, 13, 14, 15,
+	8, 9, 10, 11,
+	4, 5, 6, 7,
+	0, 1, 2, 3
+    };
+    Board::Grid grid = 0;
+    for(int i(0); i < 16; ++i){
+	grid = Board::set(grid, i / 4, i % 4, xs[i]);
+    }
+    EXPECT_EQ(grid, Board::flipV(grid0to15));
+}
+
 TEST(BoardTest, transposeIDRAND){
     std::mt19937 mt = test::mtInit();
 
