@@ -37,6 +37,7 @@ public:
     static GridMap nextPossibleWorld(Grid);
     static GridList nextPossibleWorldLeft(Grid);
     static void uniq(GridMap&);
+    static int xsqrtx_pow2(int);
 private:
     static int sqrt(int); 
     Grid grid;

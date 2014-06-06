@@ -43,6 +43,43 @@ namespace {
 	    return 181;
 	};
     }
+    int xsqrtx_pow2(int i){
+	switch(i){
+	case 0:
+	    return 0;
+	case 1:
+	    return 3;
+	case 2:
+	    return 8;
+	case 3:
+	    return 23;
+	case 4:
+	    return 64;
+	case 5:
+	    return 181;
+	case 6:
+	    return 512;
+	case 7:
+	    return 1448;
+	case 8:
+	    return 4096;
+	case 9:
+	    return 11585;
+	case 10:
+	    return 32768;
+	case 11:
+	    return 92682;
+	case 12:
+	    return 262144;
+	case 13:
+	    return 741455;
+	case 14:
+	    return 2097152;
+	case 15:
+	default:
+	    return 5931642;
+	};
+    }
 }
 
 TEST(Nona7Test, staticEvalRAND){
@@ -81,7 +118,7 @@ TEST(Nona7Test, staticEvalRAND){
 	for(int i(0); i < 4; ++i)
 	    for(int j(0); j < 4; ++j)
 		for(int k(0); k < 4; ++k)
-		    sums[k] += Board::pow2(Board::get(grid, i, j)) * sqrt(Board::pow2(Board::get(grid, i, j))) * valss[k][i][j];
+		    sums[k] += xsqrtx_pow2(Board::get(grid, i, j)) * valss[k][i][j];
 
         EXPECT_EQ(*(std::max_element(std::begin(sums), std::end(sums))), Nona7::staticEval(grid));
     }
