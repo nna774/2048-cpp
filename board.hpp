@@ -77,10 +77,10 @@ public:
 	case Dir::Down:
 	    return gridMirror(flipV(grid));
 	case Dir::Right:
-	    return gridMirror(transpose(grid));
+	    return transpose(gridMirror(grid));
 	case Dir::Left:
 	default :
-	    return transpose(gridMirror(grid));
+	    return gridMirror(transpose(grid));
 	}
     }
     static Grid moveLeft(Board::Grid grid){

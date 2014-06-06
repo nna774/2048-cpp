@@ -19,5 +19,12 @@ namespace test{
 	}
 	return grid;
     }
+    Board::Grid toGrid(std::array<int, 16> xs){
+	Board::Grid grid = 0;
+	for(int i(0); i < 16; ++i){
+	    grid = Board::set(grid, i / 4, i % 4, xs[i]);
+	}
+	return grid;
+    }
 };
 

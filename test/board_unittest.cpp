@@ -59,17 +59,17 @@ TEST(BoardTest, gridMirrorIDRAND){
 }
 
 TEST(BoardTest, gridMirror0to15){
-    int xs[] = {
+    std::array<int, 16> const xs = {{
 	3, 2, 1, 0,
 	7, 6, 5, 4,
 	11, 10, 9, 8,
 	15, 14, 13, 12
-    };
+    }};
     Board::Grid grid = 0;
     for(int i(0); i < 16; ++i){
 	grid = Board::set(grid, i / 4, i % 4, xs[i]);
     }
-    EXPECT_EQ(grid, Board::gridMirror(grid0to15));
+    EXPECT_EQ(test::toGrid(xs), Board::gridMirror(grid0to15));
 }
 
 TEST(BoardTest, flipVIDRAND){
@@ -82,17 +82,17 @@ TEST(BoardTest, flipVIDRAND){
 }
 
 TEST(BoardTest, flipV0to15){
-    int xs[] = {
+    std::array<int, 16> const xs = {{
 	12, 13, 14, 15,
 	8, 9, 10, 11,
 	4, 5, 6, 7,
 	0, 1, 2, 3
-    };
+    }};
     Board::Grid grid = 0;
     for(int i(0); i < 16; ++i){
 	grid = Board::set(grid, i / 4, i % 4, xs[i]);
     }
-    EXPECT_EQ(grid, Board::flipV(grid0to15));
+    EXPECT_EQ(test::toGrid(xs), Board::flipV(grid0to15));
 }
 
 TEST(BoardTest, transposeIDRAND){
@@ -105,17 +105,54 @@ TEST(BoardTest, transposeIDRAND){
 }
 
 TEST(BoardTest, transpose0to15){
-    int xs[] = {
+    std::array<int, 16> const xs = {{
 	0, 4, 8, 12,
 	1, 5, 9, 13,
 	2, 6, 10, 14,
 	3, 7, 11, 15
-    };
+    }};
     Board::Grid grid = 0;
     for(int i(0); i < 16; ++i){
 	grid = Board::set(grid, i / 4, i % 4, xs[i]);
     }
-    EXPECT_EQ(grid, Board::transpose(grid0to15));
+    EXPECT_EQ(test::toGrid(xs), Board::transpose(grid0to15));
+}
+
+TEST(BoardTest, rotateUp0to15){
+    std::array<int, 16> const xs = {{
+	0, 1, 2, 3,
+	4, 5, 6, 7,
+	8, 9, 10, 11,
+	12, 13, 14, 15
+    }};
+    EXPECT_EQ(test::toGrid(xs), Board::rotate(grid0to15, Dir::Up));
+}
+TEST(BoardTest, rotateDown0to15){
+    std::array<int, 16> const xs = {{
+	    15, 14, 13, 12,
+	    11, 10, 9, 8,
+	    7, 6, 5, 4,
+	    3, 2, 1, 0
+    }};
+    EXPECT_EQ(test::toGrid(xs), Board::rotate(grid0to15, Dir::Down));
+}
+TEST(BoardTest, rotateLeft0to15){
+    std::array<int, 16> const xs = {{
+	    12, 8, 4, 0,
+	    13, 9, 5, 1,
+	    14, 10, 6, 2,
+	    15, 11, 7, 3
+    }};
+    EXPECT_EQ(test::toGrid(xs), Board::rotate(grid0to15, Dir::Left));
+}
+TEST(BoardTest, rotateRight0to15){
+    std::array<int, 16> const xs = {{
+	    3, 7, 11, 15,
+	    2, 6, 10, 14,
+	    1, 5, 9, 13,
+	    0, 4, 8, 12
+    }};
+    EXPECT_EQ(test::toGrid(xs), Board::rotate(grid0to15, Dir::Right));
 }
 
 TEST(BoardTest, popCountRAND){
