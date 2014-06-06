@@ -40,7 +40,6 @@ public:
         return (grid & ~(UINT64_C(0b1111) << pos)) | (v << pos); // v が4bit 超えてると死ぬ
         // return (grid & ~(UINT64_C(0b1111) << pos)) | (v & (UINT64_C(0b1111)) << pos);
     }
-    static Grid rotate(Grid, Dir);
     static Grid transpose(Board::Grid grid){
         static uint64_t const
             cdgh = UINT64_C(0x00FF00FF00000000),
@@ -49,6 +48,15 @@ public:
             egmo = UINT64_C(0x0000F0F00000F0F0);
         grid = (grid & ~cdgh & ~ijmn) | ((grid & cdgh) >> 24) | ((grid & ijmn) << 24);
         return (grid & ~bdjl & ~egmo) | ((grid & bdjl) >> 12) | ((grid & egmo) << 12);
+    }
+    static Grid flipV(Board::Grid grid){
+        static uint64_t const
+            a = UINT64_C(0xFFFFFFFF00000000),
+            b = UINT64_C(0x00000000FFFFFFFF),
+            c = UINT64_C(0xFFFF0000FFFF0000),
+            d = UINT64_C(0x0000FFFF0000FFFF);
+        grid = ((grid & a) >> 32) | ((grid & b) << 32);
+        return ((grid & c) >> 16) | ((grid & d) << 16);
     }
     static Grid gridMirror(Board::Grid grid){
         static uint64_t const
@@ -61,6 +69,19 @@ public:
             ((grid & bfjn) >> 4) |
             ((grid & cgko) << 4) |
             ((grid & dhlp) << 12);
+    }
+    static Grid rotate(Board::Grid grid, Dir dir){
+	switch(dir){
+	case Dir::Up:
+	    return grid;
+	case Dir::Down:
+	    return gridMirror(flipV(grid));
+	case Dir::Right:
+	    return gridMirror(transpose(grid));
+	case Dir::Left:
+	default :
+	    return transpose(gridMirror(grid));
+	}
     }
     static Grid moveLeft(Board::Grid grid){
         static std::array<uint16_t, 1 << 16> const table = Board::makeTable().first;

@@ -160,20 +160,6 @@ Dir Board::decideDir() {
     return oracle.decideDir();
 }
 
-Board::Grid Board::rotate(Board::Grid grid, Dir dir){
-    switch(dir){
-    case Dir::Up:
-        return grid;
-    case Dir::Down:
-        return 0;
-    case Dir::Right:
-        return 0;
-    case Dir::Left:
-    default :
-        return 0;
-    }
-}
-
 std::pair<std::array<uint16_t, 1 << 16>, std::array<int, 1 << 16>> Board::makeTable(){
     std::array<uint16_t, 1 << 16> table;
     std::array<int, 1 << 16> scoreTable;
