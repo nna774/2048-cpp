@@ -104,6 +104,20 @@ TEST(BoardTest, transposeIDRAND){
     }
 }
 
+TEST(BoardTest, transpose0to15){
+    int xs[] = {
+	0, 4, 8, 12,
+	1, 5, 9, 13,
+	2, 6, 10, 14,
+	3, 7, 11, 15
+    };
+    Board::Grid grid = 0;
+    for(int i(0); i < 16; ++i){
+	grid = Board::set(grid, i / 4, i % 4, xs[i]);
+    }
+    EXPECT_EQ(grid, Board::transpose(grid0to15));
+}
+
 TEST(BoardTest, popCountRAND){
 #ifdef __GNUC__
     std::mt19937 mt = test::mtInit();
