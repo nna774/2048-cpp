@@ -5,6 +5,10 @@
 
 #define ITERATION 10000000
 
+namespace{
+    static Board::Grid const grid0to15 = test::make0to15();
+}
+
 TEST(BoardTest, log2){
     EXPECT_EQ(0, Board::log2(0));
     EXPECT_EQ(1, Board::log2(2));
@@ -51,6 +55,29 @@ TEST(BoardTest, gridMirrorIDRAND){
     for(int i(0); i < ITERATION; ++i){
         Board::Grid grid = mt();
         EXPECT_TRUE(grid == Board::gridMirror( Board::gridMirror( grid )));
+    }
+}
+
+TEST(BoardTest, gridMirror0to15){
+    int xs[] = {
+	3, 2, 1, 0,
+	7, 6, 5, 4,
+	11, 10, 9, 8,
+	15, 14, 13, 12
+    };
+    Board::Grid grid = 0;
+    for(int i(0); i < 16; ++i){
+	grid = Board::set(grid, i / 4, i % 4, xs[i]);
+    }
+    EXPECT_EQ(grid, Board::gridMirror(grid0to15));
+}
+
+TEST(BoardTest, flipVIDRAND){
+    std::mt19937 mt = test::mtInit();
+
+    for(int i(0); i < ITERATION; ++i){
+        Board::Grid grid = mt();
+        EXPECT_TRUE(grid == Board::flipV( Board::flipV( grid )));
     }
 }
 
