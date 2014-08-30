@@ -200,6 +200,15 @@ public:
             table[(grid & UINT64_C(0x00000000FFFF0000)) >> 16] +
             table[(grid & UINT64_C(0x000000000000FFFF)) >> 00] ;
     }
+    static int sum(Grid grid){
+        int sum(0);
+        for(int i(0); i < 4; ++i){
+            for(int j(0); j < 4; ++j){
+                sum += pow2(get(grid, i ,j));
+            }
+        }
+        return sum;
+    }
 private:
     std::string const endpoint;
     int fd;

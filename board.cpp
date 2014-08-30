@@ -14,6 +14,7 @@
 #include "kihime.hpp"
 #include "kihimeNext.hpp"
 #include "nona7.hpp"
+#include "uct.hpp"
 
 Board::Board(){
     Board("http", "2048.semantics3.com", "80");
@@ -214,4 +215,5 @@ template Dir Board::decideDir<KoyoneNext>();
 template Dir Board::decideDir<Kihime>();
 template Dir Board::decideDir<KihimeNext>();
 template Dir Board::decideDir<Nona7>();
+template Dir Board::decideDir<UCT>();
 

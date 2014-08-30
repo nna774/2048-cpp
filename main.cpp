@@ -6,7 +6,7 @@
 #include "kihime.hpp"
 #include "kihimeNext.hpp"
 #include "nona7.hpp"
-
+#include "uct.hpp"
 
 static std::string const protocol = "http";
 static std::string const endpoint = "ring"; // #### TODO: 適当にargv 読むようにする ####
@@ -20,7 +20,7 @@ int main(int, char**){
     try{
         while(1){
             // auto tmp = b.grid;
-            auto dir = b.decideDir<KoyoneNext>();
+            auto dir = b.decideDir<UCT>();
             b.move(dir);
             b.show();
         }

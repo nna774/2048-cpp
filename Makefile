@@ -3,7 +3,7 @@ O = -O3
 OPT = -O3 -march=native -pipe
 PROFILE = -fprofile-generate
 RELEASE = -fprofile-use
-SRC = main.o board.o koyone.o koyoneNext.o kihime.o kihimeNext.o nona7.o
+SRC = main.o board.o koyone.o koyoneNext.o kihime.o kihimeNext.o nona7.o uct.o
 OUTNAME = 2048-ai
 ITERATION = 3
 
@@ -16,13 +16,14 @@ all: $(SRC)
 	$(CXX) $(O) $(OPT) --std=c++11 -Wall -Wextra -c $<
 
 main.o: board.hpp
-board.o: board.cpp board.hpp koyone.hpp koyoneNext.hpp kihime.hpp kihimeNext.hpp nona7.hpp
+board.o: board.cpp board.hpp koyone.hpp koyoneNext.hpp kihime.hpp kihimeNext.hpp nona7.hpp uct.hpp
 
 koyone.o: koyone.cpp koyone.hpp
 koyoneNext.o : koyoneNext.cpp koyoneNext.hpp
 kihime.o: kihime.cpp kihime.hpp
 kihimeNext.o: kihimeNext.cpp kihimeNext.hpp
 nona7.o: nona7.cpp nona7.hpp
+uct.o: uct.cpp uct.hpp
 
 clean:
 	rm -f *.o $(OUTNAME) *.gcda gmon.out
