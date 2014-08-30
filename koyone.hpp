@@ -14,13 +14,28 @@ public:
     static int const constexpr MATURED = 10;
     static int const constexpr SPACE_WEIGHT = 500;
     static std::array<int, 1 << 16> makeTable();
-    static int staticEval(Board::Grid grid){
-        static std::array<int, 1 << 16> const table = makeTable();
-        return
-            table[(grid & UINT64_C(0xFFFF000000000000)) >> 48] +
-            table[(grid & UINT64_C(0x0000FFFF00000000)) >> 32] +
-            table[(grid & UINT64_C(0x00000000FFFF0000)) >> 16] +
-            table[(grid & UINT64_C(0x000000000000FFFF)) >> 00] ;
+    static double product(std::array<std::array<double, 4>, 4> const& weight, Board::Grid grid){
+        double sum(0);
+        for(int i(0); i < 4; ++i){
+            for(int j(0); j < 4; ++j){
+                sum += weight[i][j] * Board::pow2(Board::get(grid, i, j));
+            }
+        }
+        return sum;
+    }
+    static double staticEval(Board::Grid grid){
+        std::array<std::array<double, 4>, 4> weight = {{
+                {{0.01, 0.01, 0.01, 0.01}},
+                {{0.03, 0.01, 0.01, 0.03}},
+                {{0.30, 0.10, 0.10, 0.10}},
+                {{0.80, 0.40, 0.40, 0.40}}
+            }};
+            double val = 0.0;
+            for(auto dir: allDirs){
+                double est = product(weight, Board::rotate(grid, dir));
+                val = std::max(est, val);
+            }
+            return std::min(val/(8192 * 1.0), 1.0);
     }
     static bool nurseryTime(Grid);
     struct CompStatic{

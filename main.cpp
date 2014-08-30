@@ -20,7 +20,7 @@ int main(int, char**){
     try{
         while(1){
             // auto tmp = b.grid;
-            auto dir = b.decideDir<UCT>();
+            auto dir = b.decideDir<KoyoneNext>();
             b.move(dir);
             b.show();
         }
