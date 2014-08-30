@@ -24,15 +24,26 @@ public:
         return sum;
     }
     static double staticEval(Board::Grid grid){
-        std::array<std::array<double, 4>, 4> weight = {{
+        static std::array<std::array<double, 4>, 4> const weight = {{
                 {{0.01, 0.01, 0.01, 0.01}},
                 {{0.03, 0.01, 0.01, 0.03}},
                 {{0.30, 0.10, 0.10, 0.10}},
                 {{0.80, 0.40, 0.40, 0.40}}
             }};
-            double val = 0.0;
+        static std::array<std::array<double, 4>, 4> const weight2 = {{
+                {{0.01, 0.01, 0.01, 0.01}},
+                {{0.03, 0.01, 0.01, 0.03}},
+                {{0.30, 0.20, 0.10, 0.10}},
+                {{0.80, 0.30, 0.40, 0.40}}
+            }};
+        bool isPhase12(false);
+        for(int i(0); i < 4;++i)
+            for(int j(0); j < 4;++j)
+                if(Board::get(grid, i, j) >= 12) isPhase12 = true;
+        
+        double val = 0.0;
             for(auto dir: allDirs){
-                double est = product(weight, Board::rotate(grid, dir));
+                double est = product(isPhase12 ? weight2 : weight, Board::rotate(grid, dir));
                 val = std::max(est, val);
             }
             return std::min(val/(8192 * 1.0), 1.0);
