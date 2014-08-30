@@ -7,7 +7,7 @@ public:
     KoyoneNext(Board::Grid grid) : grid(grid) { }
     Dir decideDir() const;
     static Koyone::GridMap iterarion(Koyone::GridMap&& map, int ITERATION){
-        Koyone::GridMap npws[ITERATION];
+        Koyone::GridMap *npws = new Koyone::GridMap[ITERATION];
         npws[0] = map;
         for(int i(0); i < ITERATION - 1; ++i){
             npws[i+1].reserve(npws[i].size());
