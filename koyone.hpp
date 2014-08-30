@@ -23,6 +23,13 @@ public:
         }
         return sum;
     }
+    static int countVoids(Board::Grid grid){
+        int voids(0);
+        for(int i(0); i < 4;++i)
+            for(int j(0); j < 4;++j)
+                if(Board::get(grid, i, j) == 0) ++voids;
+        return voids;
+    }
     static double staticEval(Board::Grid grid){
         static std::array<std::array<double, 4>, 4> const weight = {{
                 {{0.01, 0.01, 0.01, 0.01}},
@@ -30,23 +37,27 @@ public:
                 {{0.30, 0.10, 0.10, 0.10}},
                 {{0.80, 0.40, 0.40, 0.40}}
             }};
-        static std::array<std::array<double, 4>, 4> const weight2 = {{
-                {{0.01, 0.01, 0.01, 0.01}},
-                {{0.03, 0.01, 0.01, 0.03}},
-                {{0.30, 0.20, 0.10, 0.10}},
-                {{0.80, 0.30, 0.40, 0.40}}
-            }};
+        // static std::array<std::array<double, 4>, 4> const weight2 = {{
+        //         {{0.01, 0.01, 0.01, 0.01}},
+        //         {{0.03, 0.01, 0.01, 0.03}},
+        //         {{0.30, 0.20, 0.10, 0.10}},
+        //         {{0.80, 0.30, 0.40, 0.40}}
+        //     }};
         bool isPhase12(false);
         for(int i(0); i < 4;++i)
             for(int j(0); j < 4;++j)
                 if(Board::get(grid, i, j) >= 12) isPhase12 = true;
-        
+
         double val = 0.0;
-            for(auto dir: allDirs){
-                double est = product(isPhase12 ? weight2 : weight, Board::rotate(grid, dir));
-                val = std::max(est, val);
-            }
+        for(auto dir: allDirs){
+            double est = product(weight, Board::rotate(grid, dir));
+            val = std::max(est, val);
+        }
+        // std::cout << std::min(val/(8192 * 1.0), 1.0) << '\n';
+        if(! isPhase12){
             return std::min(val/(8192 * 1.0), 1.0);
+        }
+        return std::min(val/(8192 * 1.0), 1.0) + 0.02 * countVoids(grid);
     }
     static bool nurseryTime(Grid);
     struct CompStatic{
