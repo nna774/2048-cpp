@@ -47,8 +47,26 @@ Dir UCT::decideDir(){
 }
 
 double UCT::staticEval(Board::Grid grid){
-    int sum = Board::sum(grid);
-    return std::min(sum/(8192 * 1.0), 1.0);
+    // std::array<std::array<double, 4>, 4> weight = {{
+    //         {{0.3, 0.2, 0.1, 0.0}},
+    //         {{0.4, 0.3, 0.2, 0.1}},
+    //         {{0.6, 0.5, 0.3, 0.2}},
+    //         {{1.0, 0.6, 0.4, 0.3}}
+    //     }};
+
+    // [[80,40,40,40],[30,10,10,10],[3,1,1,3],[1,1,1,1]];
+    std::array<std::array<double, 4>, 4> weight = {{
+            {{0.01, 0.01, 0.01, 0.01}},
+            {{0.03, 0.01, 0.01, 0.03}},
+            {{0.30, 0.10, 0.10, 0.10}},
+            {{0.80, 0.40, 0.40, 0.40}}
+        }};
+    double val = 0.0;
+    for(auto dir: allDirs){
+        double est = product(weight, Board::rotate(grid, dir));
+        val = std::max(est, val);
+    }
+    return std::min(val/(8192 * 1.0), 1.0);
 }
 
 Board::Grid UCT::playout(Board::Grid grid, int depth){
@@ -64,3 +82,12 @@ Board::Grid UCT::playout(Board::Grid grid, int depth){
     return playout(grid, depth - 1);
 }
 
+double UCT::product(std::array<std::array<double, 4>, 4> const& weight, Board::Grid grid){
+    double sum(0);
+    for(int i(0); i < 4; ++i){
+        for(int j(0); j < 4; ++j){
+            sum += weight[i][j] * Board::pow2(Board::get(grid, i, j));
+        }
+    }
+    return sum;
+}
