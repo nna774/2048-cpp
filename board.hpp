@@ -5,6 +5,7 @@
 #include <utility>
 #include <algorithm>
 #include <cstdint>
+#include <random>
 
 enum class Dir{
     Up,
