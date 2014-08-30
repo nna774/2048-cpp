@@ -49,8 +49,9 @@ Board::Board(std::string const, std::string const endpoint, std::string const po
     if (rp == nullptr) exit(-1);
     freeaddrinfo(result);
     fd = sfd;
-    
-    std::string req = "GET /hi/start/json HTTP/1.1\nHost: " + endpoint + "\n\n"; //// #### TODO: 共通部分の関数化 ####
+
+    std::string req = "GET /hi/start/size/4/tiles/2/victory/13/rand/2/json HTTP/1.1\nHost: " + endpoint + "\n\n"; //// #### TODO: 共通部分の関数化 ####	
+    // std::string req = "GET /hi/start/json HTTP/1.1\nHost: " + endpoint + "\n\n"; //// #### TODO: 共通部分の関数化 ####
     if(write(sfd, req.c_str(), req.size()) < 0) std::cerr << "something Wrong..." << std::endl;
     char buf[512];
     if(read(sfd, buf, 255) < 0) std::cerr << "something Wrong..." << std::endl;
