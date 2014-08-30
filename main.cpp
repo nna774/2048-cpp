@@ -13,7 +13,8 @@ static std::string const endpoint = "ring"; // #### TODO: 適当にargv 読む�
 static std::string const port = "2048";
 
 int main(int, char**){
-    Board b(protocol, endpoint, port);
+    Board b("http", "2048.semantics3.com", "8080");
+    // Board b(protocol, endpoint, port);
     b.show();
 
     try{
