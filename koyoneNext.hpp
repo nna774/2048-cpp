@@ -1,15 +1,17 @@
 #pragma once
 
+#include <vector>
+
 #include "koyone.hpp"
 
 class KoyoneNext {
 public:
     KoyoneNext(Board::Grid grid) : grid(grid) { }
     Dir decideDir() const;
-    static Koyone::GridMap iterarion(Koyone::GridMap&& map, int ITERATION){
-        Koyone::GridMap npws[ITERATION];
+    static Koyone::GridMap iterarion(Koyone::GridMap const& map, int iter){
+        std::vector<Koyone::GridMap> npws(iter);
         npws[0] = map;
-        for(int i(0); i < ITERATION - 1; ++i){
+        for(int i(0); i < iter - 1; ++i){
             npws[i+1].reserve(npws[i].size());
             for(auto const& e: npws[i]){
                 for(auto const& e2: nextPossibleWorld(e.first))
@@ -17,7 +19,7 @@ public:
             }
             if(npws[i+1].empty()) return npws[i];
         }
-        return npws[ITERATION - 1];
+        return npws[iter - 1];
     }
     static Koyone::GridMap nextPossibleWorld(Board::Grid);
 private:
