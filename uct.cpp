@@ -12,11 +12,11 @@ Dir UCT::decideDir(){
     std::array<int, 4> counts;
     std::array<double, 4> sums;
     int count(4 * ITERATION_BOOT);
-    counts.fill(ITERATION_BOOT);
     sums.fill(0);
     for(auto dir: allDirs){
         for(int i(0); i < ITERATION_BOOT; ++i){
             sums[dirToInt(dir)] += staticEval(playout(Board::moved(grid, dir), PLAYOUT_DEPTH));
+            ++counts[dirToInt(dir)];
         }
     }
     for(int i(0); i < ITERATION; ++i){

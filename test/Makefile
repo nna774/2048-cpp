@@ -21,8 +21,8 @@ gtest_main.a : gtest-all.o gtest_main.o
 
 TESTS = board_unittest koyone_unittest nona7_unittest
 
-MINE = $(USER_DIR)/board.cpp $(USER_DIR)/board.hpp $(USER_DIR)/kihime.cpp $(USER_DIR)/kihime.hpp $(USER_DIR)/kihimeNext.cpp $(USER_DIR)/kihimeNext.hpp $(USER_DIR)/koyone.cpp $(USER_DIR)/koyone.hpp $(USER_DIR)/koyoneNext.cpp $(USER_DIR)/koyoneNext.hpp $(USER_DIR)/nona7.cpp $(USER_DIR)/nona7.hpp
-MINE_O = board.o koyone.o koyoneNext.o kihime.o kihimeNext.o nona7.o
+MINE = $(USER_DIR)/board.cpp $(USER_DIR)/board.hpp $(USER_DIR)/kihime.cpp $(USER_DIR)/kihime.hpp $(USER_DIR)/kihimeNext.cpp $(USER_DIR)/kihimeNext.hpp $(USER_DIR)/koyone.cpp $(USER_DIR)/koyone.hpp $(USER_DIR)/koyoneNext.cpp $(USER_DIR)/koyoneNext.hpp $(USER_DIR)/nona7.cpp $(USER_DIR)/nona7.hpp $(USER_DIR)/uct.cpp $(USER_DIR)/uct.hpp
+MINE_O = board.o koyone.o koyoneNext.o kihime.o kihimeNext.o nona7.o uct.o
 
 board.o : $(MINE) $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/board.cpp
@@ -42,6 +42,9 @@ kihimeNext.o : $(MINE) $(GTEST_HEADERS)
 nona7.o : $(MINE) $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/nona7.cpp
 
+uct.o : $(MINE) $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/uct.cpp
+
 board_unittest.o :  $(TESTSRC_DIR)/test.hpp $(TESTSRC_DIR)/board_unittest.cpp $(USER_DIR)/board.hpp $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TESTSRC_DIR)/board_unittest.cpp
 
@@ -58,6 +61,12 @@ nona7_unittest.o : $(TESTSRC_DIR)/test.hpp $(TESTSRC_DIR)/nona7_unittest.cpp $(U
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TESTSRC_DIR)/nona7_unittest.cpp
 
 nona7_unittest : $(MINE_O) nona7_unittest.o gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+
+uct_unittest.o : $(TESTSRC_DIR)/test.hpp $(TESTSRC_DIR)/uct_unittest.cpp $(USER_DIR)/uct.hpp $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TESTSRC_DIR)/uct_unittest.cpp
+
+uct_unittest : $(MINE_O) uct_unittest.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 test: $(TESTS)
